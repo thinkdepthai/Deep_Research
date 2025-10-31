@@ -1,4 +1,4 @@
-# Deep_Research
+# ThinkDepth.ai Deep Research
 ThinkDepth.ai deep research established a new state-of-art result on DeepResearch  Bench on Oct 29th, 2025. It outperformed gemini-2.5-pro-deepresearch by  2.78%; OpenAI deep research by 6.04%; Anthropic Claude deep research by  7.45%.
 
 contact: paichul@cs.stanford.edu
