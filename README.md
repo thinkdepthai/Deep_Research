@@ -21,7 +21,7 @@ export TAVILY_API_KEY='Your Tavily API Key'
 * uv run jupyter notebook thinkdepthai_deepresearch.ipynb
 
 ### Example Report
-For the task "Write a paper to discuss the influence of AI interaction on interpersonal relations, considering AI's potential to fundamentally change how and why individuals relate to each other."
+For the task "Write a paper to discuss the influence of AI interaction on interpersonal relations, considering AI's potential to fundamentally change how and why individuals relate to each other.", a snapshot of the example report is shared below:
 
 
 <img width="1005" height="706" alt="Deep Research Report Example" src="https://github.com/user-attachments/assets/08aef8d3-5d7c-4f32-ab6f-57235ea3b82f" />
