@@ -4,7 +4,8 @@
 * It outperformed OpenAI deep research by 6.04%.
 * It outperformed Anthropic Claude deep research by  7.45%.
 
-Primary Contact: Paichun Lin | paichul@cs.stanford.edu
+Primary Contact: <a href="https://www.linkedin.com/in/paichunjimlin/">Paichun Lin</a> | paichul@cs.stanford.edu
+
 
 <img width="890" height="453" alt="DeepResearch Bench Results" src="https://github.com/user-attachments/assets/313fd4cc-bb05-4792-880f-d66e9c59082a" />
 
