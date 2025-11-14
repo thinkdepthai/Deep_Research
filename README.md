@@ -14,6 +14,7 @@ We have opened source the project. Please follow the instructions for the setup.
 * in ~/.zshrc or ~/.bashrc, enter
 
 export OPENAI_API_KEY='Your OpenAI API Key'
+
 export TAVILY_API_KEY='Your Tavily API Key'
 
 * uv sync
@@ -22,4 +23,6 @@ export TAVILY_API_KEY='Your Tavily API Key'
 ### Example Report
 For the task "Write a paper to discuss the influence of AI interaction on interpersonal relations, considering AI's potential to fundamentally change how and why individuals relate to each other."
 
+
+<img width="1005" height="706" alt="Deep Research Report Example" src="https://github.com/user-attachments/assets/08aef8d3-5d7c-4f32-ab6f-57235ea3b82f" />
 
