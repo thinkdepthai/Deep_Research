@@ -37,7 +37,7 @@ uv run jupyter notebook thinkdepthai_deepresearch.ipynb
 
 <img width="899" height="463" alt="benchmark" src="https://github.com/user-attachments/assets/1ddd8bd0-1d04-467e-a00d-394e9dc967f8" />
 
-### Screenshot of the <a href="https://huggingface.co/spaces/muset-ai/DeepResearch-Bench-Leaderboard"> DeepResearch Bench Leaderboard </a>
+### <a href="https://huggingface.co/spaces/muset-ai/DeepResearch-Bench-Leaderboard"> DeepResearch Bench Leaderboard </a> Screenshoot
 
 <img width="1178" height="751" alt="huggingface_leaderboard" src="https://github.com/user-attachments/assets/2d88256a-5e77-46f8-bd51-fe083bfcc780" />
 
