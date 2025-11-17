@@ -10,15 +10,24 @@ Primary Contact: <a href="https://www.linkedin.com/in/paichunjimlin">Paichun Lin
 
 ### Setup
 Please follow the instructions to run the demo:
-1. pip install uv
-2. in ~/.zshrc or ~/.bashrc, enter
-
+1. install uv
+```
+pip install uv
+```
+2. in ~/.zshrc or ~/.bashrc, enter your API keys info:
+```
 export OPENAI_API_KEY='Your OpenAI API Key'
 
 export TAVILY_API_KEY='Your Tavily API Key'
-
-3. uv sync
-4. uv run jupyter notebook thinkdepthai_deepresearch.ipynb
+```
+3. Install all packages
+```
+uv sync
+```
+4. Run demo in the notebook
+```
+uv run jupyter notebook thinkdepthai_deepresearch.ipynb
+```
 
 ### Experiments
 <a href="https://thinkdepth.ai">ThinkDepth.ai</a> deep research is ranked #1 and established a new state-of-art result on <a href="https://huggingface.co/spaces/Ayanami0730/DeepResearch-Leaderboard/discussions/4/files">DeepResearch  Bench</a> on Oct 29th, 2025.
