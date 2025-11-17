@@ -26,4 +26,10 @@ export TAVILY_API_KEY='Your Tavily API Key'
 * It outperformed OpenAI deep research by 6.04%.
 * It outperformed Anthropic Claude deep research by  7.45%.
 
-<img width="890" height="453" alt="DeepResearch Bench Results" src="https://github.com/user-attachments/assets/313fd4cc-bb05-4792-880f-d66e9c59082a" />
+<img width="899" height="463" alt="benchmark" src="https://github.com/user-attachments/assets/1ddd8bd0-1d04-467e-a00d-394e9dc967f8" />
+
+### Example Generated Report
+For the task "Write a paper to discuss the influence of AI interaction on interpersonal relations, considering AI's potential to fundamentally change how and why individuals relate to each other.", a snapshot of the generated report is shared below:
+
+
+<img width="1005" height="645" alt="report" src="https://github.com/user-attachments/assets/7fccc245-a83b-4b95-9abe-f1d56fef607d" />
