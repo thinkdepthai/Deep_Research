@@ -10,7 +10,7 @@ Primary Contact: <a href="https://www.linkedin.com/in/paichunjimlin">Paichun Lin
 
 ### Setup
 Please follow the instructions to run the demo:
-1. install uv
+1. Install uv
 ```
 pip install uv
 ```
@@ -24,7 +24,7 @@ export TAVILY_API_KEY='Your Tavily API Key'
 ```
 uv sync
 ```
-4. Run demo in the notebook
+4. Run the demo in the notebook
 ```
 uv run jupyter notebook thinkdepthai_deepresearch.ipynb
 ```
