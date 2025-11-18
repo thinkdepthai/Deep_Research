@@ -1,0 +1,6 @@
+*.pyc 
+*.txt
+PKG-INFO
+*.lock
+*.jsonl
+*.ipynb_checkpoints

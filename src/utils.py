@@ -5,7 +5,8 @@
 This module provides search and content processing utilities for the research agent,
 including web search capabilities and content summarization tools.
 """
-
+import requests
+import os
 from pathlib import Path
 from datetime import datetime
 from typing_extensions import Annotated, List, Literal
@@ -14,7 +15,6 @@ from langchain.chat_models import init_chat_model
 from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool, InjectedToolArg
 from tavily import TavilyClient
-
 from deep_research.state_research import Summary
 from deep_research.prompts import summarize_webpage_prompt, report_generation_with_draft_insight_prompt
 
@@ -46,6 +46,54 @@ MAX_CONTEXT_LENGTH = 250000
 
 # ===== SEARCH FUNCTIONS =====
 
+def perform_you_search(query: str, max_results: int = 3) -> dict:
+    url = "https://api.ydc-index.io/v1/search"
+    headers = {"x-api-key": os.environ["YOU_API_KEY"]}
+    params = {
+        "query": query,
+        "count": max_results,
+        "livecrawl": "all",
+        "livecrawl_formats": "markdown",
+    }
+    try:
+        response = requests.get(url, headers=headers, params=params)
+        response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print(f"Error searching You.com: {e}")
+        return None
+    return response.json()
+
+def ydc_search_multiple(
+    search_queries: List[str], 
+    max_results: int = 3, 
+    include_raw_content: bool = True, 
+) -> List[dict]:
+    """Perform search using You.com search API for multiple queries.
+
+    Args:
+        search_queries: List of search queries to execute
+        max_results: Maximum number of results per query
+        include_raw_content: Whether to include raw webpage content
+
+    Returns:
+        List of search result dictionaries
+    """
+    # Execute searches sequentially. Note: yon can use AsyncTavilyClient to parallelize this step.
+    search_docs = []
+    for query in search_queries:
+        try:
+            result = perform_you_search(
+                query=query,
+                max_results=max_results,
+            )
+            search_docs.append(result)
+        except Exception as e:
+            print(f"Error searching You.com: {e}")
+            return None
+        
+        search_docs.append(result)
+    return search_docs
+
 def tavily_search_multiple(
     search_queries: List[str], 
     max_results: int = 3, 
@@ -63,7 +111,6 @@ def tavily_search_multiple(
     Returns:
         List of search result dictionaries
     """
-
     # Execute searches sequentially. Note: yon can use AsyncTavilyClient to parallelize this step.
     search_docs = []
     for query in search_queries:
@@ -103,14 +150,14 @@ def summarize_webpage_content(webpage_content: str) -> str:
             f"<summary>\n{summary.summary}\n</summary>\n\n"
             f"<key_excerpts>\n{summary.key_excerpts}\n</key_excerpts>"
         )
-
+       
         return formatted_summary
 
     except Exception as e:
         print(f"Failed to summarize webpage: {str(e)}")
         return webpage_content[:1000] + "..." if len(webpage_content) > 1000 else webpage_content
 
-def deduplicate_search_results(search_results: List[dict]) -> dict:
+def deduplicate_search_results(search_results: List[dict], search_tool_name: str) -> dict:
     """Deduplicate search results by URL to avoid processing duplicate content.
 
     Args:
@@ -122,14 +169,21 @@ def deduplicate_search_results(search_results: List[dict]) -> dict:
     unique_results = {}
 
     for response in search_results:
-        for result in response['results']:
+        if search_tool_name == "ydc":
+            if "news" in response["results"]:
+                all_results = response["results"]["web"] + response["results"]["news"]
+            else:
+                all_results = response["results"]["web"]
+        elif search_tool_name == "tavily":
+            all_results = response['results']
+        
+        for result in all_results:
             url = result['url']
             if url not in unique_results:
-                unique_results[url] = result
-
+                unique_results[url] = result  
     return unique_results
 
-def process_search_results(unique_results: dict) -> dict:
+def process_search_results(unique_results: dict, search_tool_name: str) -> dict:
     """Process search results by summarizing content where available.
 
     Args:
@@ -139,20 +193,34 @@ def process_search_results(unique_results: dict) -> dict:
         Dictionary of processed results with summaries
     """
     summarized_results = {}
+    if search_tool_name == "tavily":
+        for url, result in unique_results.items():
+            # Use existing content if no raw content for summarization
+            if not result.get("raw_content"):
+                content = result['content']
+            else:
+                # Summarize raw content for better processing
+                content = summarize_webpage_content(result['raw_content'][:MAX_CONTEXT_LENGTH])
 
-    for url, result in unique_results.items():
-        # Use existing content if no raw content for summarization
-        if not result.get("raw_content"):
-            content = result['content']
-        else:
-            # Summarize raw content for better processing
-            content = summarize_webpage_content(result['raw_content'][:MAX_CONTEXT_LENGTH])
+            summarized_results[url] = {
+                'title': result['title'],
+                'content': content
+            }
+    elif search_tool_name == "ydc":
+        for url, result in unique_results.items():
+            # Use existing content if no raw content for summarization
+            if not result.get("contents"):
+                content = result.get("snippets", "")
+                if content and isinstance(content, list):
+                    content = " ".join(content)
+            else:
+                # Summarize raw content for better processing
+                content = summarize_webpage_content(result['contents']['markdown'][:MAX_CONTEXT_LENGTH])
 
-        summarized_results[url] = {
-            'title': result['title'],
-            'content': content
-        }
-
+            summarized_results[url] = {
+                'title': result['title'],
+                'content': content
+            }
     return summarized_results
 
 def format_search_output(summarized_results: dict) -> str:
@@ -180,6 +248,37 @@ def format_search_output(summarized_results: dict) -> str:
 # ===== RESEARCH TOOLS =====
 
 @tool(parse_docstring=True)
+def ydc_search(
+    query: str,
+    max_results: Annotated[int, InjectedToolArg] = 3,
+) -> str:
+    """Fetch results from You.com search API with content summarization.
+
+    Args:
+        query: A single search query to execute
+        max_results: Maximum number of results to return
+
+    Returns:
+        Formatted string of search results with summaries
+    """
+    print("in ydc_search xxx")
+    # Execute search for single query
+    search_results = ydc_search_multiple(
+        [query],  # Convert single query to list for the internal function
+        max_results=max_results,
+    )
+
+
+    # Deduplicate results by URL to avoid processing duplicate content
+    unique_results = deduplicate_search_results(search_results, "ydc")
+    # Process results with summarization
+    summarized_results = process_search_results(unique_results, "ydc")
+    print(f"length of summarized_results: {len(summarized_results)}")
+    # Format output for consumption
+    return format_search_output(summarized_results)
+
+
+@tool(parse_docstring=True)
 def tavily_search(
     query: str,
     max_results: Annotated[int, InjectedToolArg] = 3,
@@ -195,6 +294,7 @@ def tavily_search(
     Returns:
         Formatted string of search results with summaries
     """
+    print("in tavily_search")
     # Execute search for single query
     search_results = tavily_search_multiple(
         [query],  # Convert single query to list for the internal function
@@ -204,11 +304,11 @@ def tavily_search(
     )
 
     # Deduplicate results by URL to avoid processing duplicate content
-    unique_results = deduplicate_search_results(search_results)
+    unique_results = deduplicate_search_results(search_results, "tavily")
 
     # Process results with summarization
-    summarized_results = process_search_results(unique_results)
-
+    summarized_results = process_search_results(unique_results, "tavily")
+    print(f"length of summarized_results: {len(summarized_results)}")
     # Format output for consumption
     return format_search_output(summarized_results)
 
