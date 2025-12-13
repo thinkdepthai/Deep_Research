@@ -48,9 +48,3 @@ For the task "Write a paper to discuss the influence of AI interaction on interp
 
 
 <img width="1005" height="645" alt="report" src="https://github.com/user-attachments/assets/7fccc245-a83b-4b95-9abe-f1d56fef607d" />
-
-### Community Feedback
-The community loves our ThinkDepth.ai deep research agents. Please see the feedback below!
-
-<img width="484" height="108" alt="feedback" src="https://github.com/user-attachments/assets/4ed3d42a-3e63-4683-904b-33cfa9de58cd" />
-
