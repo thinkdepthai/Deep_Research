@@ -1,0 +1,1046 @@
+{
+  "version": "1.90.0",
+  "url": "https://www.boost.org/libraries/1.90.0/list/",
+  "scraped_at": "2025-12-15 22:31:54",
+  "libraries_count": 173,
+  "libraries": [
+    {
+      "name": "Accumulators",
+      "name_link": "https://www.boost.org/library/1.90.0/accumulators/",
+      "c++_version": "C++03",
+      "description": "  Framework for incremental calculation, and collection of statistical accumulators."
+    },
+    {
+      "name": "Algorithm",
+      "name_link": "https://www.boost.org/library/1.90.0/algorithm/",
+      "c++_version": "C++03",
+      "description": "  A collection of useful generic algorithms."
+    },
+    {
+      "name": "Align",
+      "name_link": "https://www.boost.org/library/1.90.0/align/",
+      "c++_version": "C++03",
+      "description": "  Memory alignment functions, allocators, traits."
+    },
+    {
+      "name": "Any",
+      "name_link": "https://www.boost.org/library/1.90.0/any/",
+      "c++_version": "C++11",
+      "description": "  Safe, generic container for single values of different value types."
+    },
+    {
+      "name": "Array",
+      "name_link": "https://www.boost.org/library/1.90.0/array/",
+      "c++_version": "C++03",
+      "description": "  STL compliant container wrapper for arrays of constant size."
+    },
+    {
+      "name": "Asio",
+      "name_link": "https://www.boost.org/library/1.90.0/asio/",
+      "c++_version": "C++11",
+      "description": "  Portable networking and other low-level I/O, including sockets, timers, hostname resolution, socket iostreams, serial ports, file descriptors and Windows HANDLEs."
+    },
+    {
+      "name": "Assert",
+      "name_link": "https://www.boost.org/library/1.90.0/assert/",
+      "c++_version": "C++03",
+      "description": "  Customizable assert macros."
+    },
+    {
+      "name": "Assign",
+      "name_link": "https://www.boost.org/library/1.90.0/assign/",
+      "c++_version": "C++11",
+      "description": "  Filling containers with constant or generated data has never been easier."
+    },
+    {
+      "name": "Atomic",
+      "name_link": "https://www.boost.org/library/1.90.0/atomic/",
+      "c++_version": "C++11",
+      "description": "  C++11-style atomic types."
+    },
+    {
+      "name": "Beast",
+      "name_link": "https://www.boost.org/library/1.90.0/beast/",
+      "c++_version": "C++11",
+      "description": "  Portable HTTP, WebSocket, and network operations using only C++11 and Boost.Asio"
+    },
+    {
+      "name": "Bimap",
+      "name_link": "https://www.boost.org/library/1.90.0/bimap/",
+      "c++_version": "C++03",
+      "description": "  Bidirectional maps library for C++. With Boost.Bimap you can create associative containers in which both types can be used as key."
+    },
+    {
+      "name": "Bind",
+      "name_link": "https://www.boost.org/library/1.90.0/bind/",
+      "c++_version": "C++11",
+      "description": "  boost::bind is a generalization of the standard functions std::bind1st and std::bind2nd. It supports arbitrary function objects, functions, function pointers, and member function pointers, and is able to bind any argument to a specific value or route input arguments into arbitrary positions."
+    },
+    {
+      "name": "Bloom",
+      "name_link": "https://www.boost.org/library/1.90.0/bloom/",
+      "c++_version": "C++11",
+      "description": "  Bloom filters."
+    },
+    {
+      "name": "CallableTraits",
+      "name_link": "https://www.boost.org/library/1.90.0/callable_traits/",
+      "c++_version": "C++11",
+      "description": "  A spiritual successor to Boost.FunctionTypes, Boost.CallableTraits is a header-only C++11 library for the compile-time inspection and manipulation of all 'callable' types. Additional support for C++17 features."
+    },
+    {
+      "name": "Call Traits",
+      "name_link": "https://www.boost.org/library/1.90.0/utilitycall_traits/",
+      "c++_version": "C++03",
+      "description": "  Defines types for passing parameters."
+    },
+    {
+      "name": "CharConv",
+      "name_link": "https://www.boost.org/library/1.90.0/charconv/",
+      "c++_version": "C++11",
+      "description": "  An implementation of <charconv> in C++11."
+    },
+    {
+      "name": "Chrono",
+      "name_link": "https://www.boost.org/library/1.90.0/chrono/",
+      "c++_version": "C++11",
+      "description": "  Useful time utilities. C++11."
+    },
+    {
+      "name": "Circular Buffer",
+      "name_link": "https://www.boost.org/library/1.90.0/circular_buffer/",
+      "c++_version": "C++03",
+      "description": "  A STL compliant container also known as ring or cyclic buffer."
+    },
+    {
+      "name": "Cobalt",
+      "name_link": "https://www.boost.org/library/1.90.0/cobalt/",
+      "c++_version": "C++20",
+      "description": "  Coroutines. Basic Algorithms & Types"
+    },
+    {
+      "name": "Compat",
+      "name_link": "https://www.boost.org/library/1.90.0/compat/",
+      "c++_version": "C++11",
+      "description": "  C++11 implementations of standard components added in later C++ standards."
+    },
+    {
+      "name": "Compressed Pair",
+      "name_link": "https://www.boost.org/library/1.90.0/utilitycompressed_pair/",
+      "c++_version": "C++03",
+      "description": "  A pair class with empty member optimization."
+    },
+    {
+      "name": "Compute",
+      "name_link": "https://www.boost.org/library/1.90.0/compute/",
+      "c++_version": "C++03",
+      "description": "  Parallel/GPU-computing library"
+    },
+    {
+      "name": "Concept Check",
+      "name_link": "https://www.boost.org/library/1.90.0/concept_check/",
+      "c++_version": "C++03",
+      "description": "  Tools for generic programming."
+    },
+    {
+      "name": "Config",
+      "name_link": "https://www.boost.org/library/1.90.0/config/",
+      "c++_version": "C++03",
+      "description": "  Helps Boost library developers adapt to compiler idiosyncrasies; not intended for library users."
+    },
+    {
+      "name": "Container",
+      "name_link": "https://www.boost.org/library/1.90.0/container/",
+      "c++_version": "C++03",
+      "description": "  Standard library containers and extensions."
+    },
+    {
+      "name": "Container Hash",
+      "name_link": "https://www.boost.org/library/1.90.0/container_hash/",
+      "c++_version": "C++11",
+      "description": "  An STL-compatible hash function object that can be extended to hash user defined types."
+    },
+    {
+      "name": "Context",
+      "name_link": "https://www.boost.org/library/1.90.0/context/",
+      "c++_version": "C++11",
+      "description": "  (C++11) Context switching library."
+    },
+    {
+      "name": "Contract",
+      "name_link": "https://www.boost.org/library/1.90.0/contract/",
+      "c++_version": "C++11",
+      "description": "  Contract programming for C++. All contract programming features are supported: Subcontracting, class invariants, postconditions (with old and return values), preconditions, customizable actions on assertion failure (e.g., terminate or throw), optional compilation and checking of assertions, etc."
+    },
+    {
+      "name": "Conversion",
+      "name_link": "https://www.boost.org/library/1.90.0/conversion/",
+      "c++_version": "C++11",
+      "description": "  Polymorphic casts."
+    },
+    {
+      "name": "Convert",
+      "name_link": "https://www.boost.org/library/1.90.0/convert/",
+      "c++_version": "C++11",
+      "description": "  An extendible and configurable type-conversion framework."
+    },
+    {
+      "name": "Core",
+      "name_link": "https://www.boost.org/library/1.90.0/core/",
+      "c++_version": "C++03",
+      "description": "  A collection of simple core utilities with minimal dependencies."
+    },
+    {
+      "name": "Coroutine",
+      "name_link": "https://www.boost.org/library/1.90.0/coroutine/",
+      "c++_version": "C++03",
+      "description": "  Coroutine library."
+    },
+    {
+      "name": "Coroutine2",
+      "name_link": "https://www.boost.org/library/1.90.0/coroutine2/",
+      "c++_version": "C++11",
+      "description": "  (C++11) Coroutine library."
+    },
+    {
+      "name": "CRC",
+      "name_link": "https://www.boost.org/library/1.90.0/crc/",
+      "c++_version": "C++11",
+      "description": "  The Boost CRC Library provides two implementations of CRC (cyclic redundancy code) computation objects and two implementations of CRC computation functions. The implementations are template-based."
+    },
+    {
+      "name": "Date Time",
+      "name_link": "https://www.boost.org/library/1.90.0/date_time/",
+      "c++_version": "C++03",
+      "description": "  A set of date-time libraries based on generic programming concepts."
+    },
+    {
+      "name": "Describe",
+      "name_link": "https://www.boost.org/library/1.90.0/describe/",
+      "c++_version": "C++03",
+      "description": "  A C++14 reflection library."
+    },
+    {
+      "name": "Detail",
+      "name_link": "https://www.boost.org/library/1.90.0/detail/",
+      "c++_version": "C++03",
+      "description": "  This library contains a set of header only utilities used internally by Boost C++ Libraries to facilitate their implementation."
+    },
+    {
+      "name": "DLL",
+      "name_link": "https://www.boost.org/library/1.90.0/dll/",
+      "c++_version": "C++11",
+      "description": "  Library for comfortable work with DLL and DSO."
+    },
+    {
+      "name": "Dynamic Bitset",
+      "name_link": "https://www.boost.org/library/1.90.0/dynamic_bitset/",
+      "c++_version": "C++11",
+      "description": "  The dynamic_bitset template represents a set of bits. It provides access to the value of individual bits via operator[] and provides all of the bitwise operators that one can apply to builtin integers, such as operator& and operator<<. The number of bits in the set can change at runtime."
+    },
+    {
+      "name": "Enable If",
+      "name_link": "https://www.boost.org/library/1.90.0/utilityenable_if/",
+      "c++_version": "C++03",
+      "description": "  Selective inclusion of function template overloads."
+    },
+    {
+      "name": "Endian",
+      "name_link": "https://www.boost.org/library/1.90.0/endian/",
+      "c++_version": "C++11",
+      "description": "  Types and conversion functions for correct byte ordering and more regardless of processor endianness."
+    },
+    {
+      "name": "Exception",
+      "name_link": "https://www.boost.org/library/1.90.0/exception/",
+      "c++_version": "C++03",
+      "description": "  The Boost Exception library supports transporting of arbitrary data in exception objects, and transporting of exceptions between threads."
+    },
+    {
+      "name": "Fiber",
+      "name_link": "https://www.boost.org/library/1.90.0/fiber/",
+      "c++_version": "C++11",
+      "description": "  (C++11) Userland threads library."
+    },
+    {
+      "name": "Filesystem",
+      "name_link": "https://www.boost.org/library/1.90.0/filesystem/",
+      "c++_version": "C++11",
+      "description": "  The Boost Filesystem Library provides portable facilities to query and manipulate paths, files, and directories."
+    },
+    {
+      "name": "Flyweight",
+      "name_link": "https://www.boost.org/library/1.90.0/flyweight/",
+      "c++_version": "C++03",
+      "description": "  Design pattern to manage large quantities of highly redundant objects."
+    },
+    {
+      "name": "Foreach",
+      "name_link": "https://www.boost.org/library/1.90.0/foreach/",
+      "c++_version": "C++03",
+      "description": "  In C++, writing a loop that iterates over a sequence is tedious. We can either use iterators, which requires a considerable amount of boiler-plate, or we can use the std::for_each() algorithm and move our loop body into a predicate, which requires no less boiler-plate and forces us to move our logic far from where it will be used. In contrast, some other languages, like Perl, provide a dedicated \"foreach\" construct that automates this process. BOOST_FOREACH is just such a construct for C++. It iterates over sequences for us, freeing us from having to deal directly with iterators or write predicates."
+    },
+    {
+      "name": "Format",
+      "name_link": "https://www.boost.org/library/1.90.0/format/",
+      "c++_version": "C++11",
+      "description": "  The format library provides a type-safe mechanism for formatting arguments according to a printf-like format-string."
+    },
+    {
+      "name": "Function",
+      "name_link": "https://www.boost.org/library/1.90.0/function/",
+      "c++_version": "C++11",
+      "description": "  Function object wrappers for deferred calls or callbacks."
+    },
+    {
+      "name": "Functional",
+      "name_link": "https://www.boost.org/library/1.90.0/functional/",
+      "c++_version": "C++03",
+      "description": "  The Boost.Function library contains a family of class templates that are function object wrappers."
+    },
+    {
+      "name": "Functional/Factory",
+      "name_link": "https://www.boost.org/library/1.90.0/functionalfactory/",
+      "c++_version": "C++03",
+      "description": "  Function object templates for dynamic and static object creation"
+    },
+    {
+      "name": "Functional/Forward",
+      "name_link": "https://www.boost.org/library/1.90.0/functionalforward/",
+      "c++_version": "C++03",
+      "description": "  Adapters to allow generic function objects to accept arbitrary arguments"
+    },
+    {
+      "name": "Functional/Overloaded Function",
+      "name_link": "https://www.boost.org/library/1.90.0/functionaloverloaded_function/",
+      "c++_version": "C++03",
+      "description": "  Overload different functions into a single function object."
+    },
+    {
+      "name": "Function Types",
+      "name_link": "https://www.boost.org/library/1.90.0/function_types/",
+      "c++_version": "C++03",
+      "description": "  Boost.FunctionTypes provides functionality to classify, decompose and synthesize function, function pointer, function reference and pointer to member types."
+    },
+    {
+      "name": "Fusion",
+      "name_link": "https://www.boost.org/library/1.90.0/fusion/",
+      "c++_version": "C++03",
+      "description": "  Library for working with tuples, including various containers, algorithms, etc."
+    },
+    {
+      "name": "Geometry",
+      "name_link": "https://www.boost.org/library/1.90.0/geometry/",
+      "c++_version": "C++14",
+      "description": "  The Boost.Geometry library provides geometric algorithms, primitives and spatial index."
+    },
+    {
+      "name": "GIL",
+      "name_link": "https://www.boost.org/library/1.90.0/gil/",
+      "c++_version": "C++14",
+      "description": "  (C++14) Generic Image Library"
+    },
+    {
+      "name": "Graph",
+      "name_link": "https://www.boost.org/library/1.90.0/graph/",
+      "c++_version": "C++14",
+      "description": "  The BGL graph interface and graph components are generic, in the same sense as the Standard Template Library (STL)."
+    },
+    {
+      "name": "GraphParallel",
+      "name_link": "https://www.boost.org/library/1.90.0/graph_parallel/",
+      "c++_version": "C++03",
+      "description": "  The PBGL graph interface and graph components are generic, in the same sense as the Standard Template Library (STL)."
+    },
+    {
+      "name": "Hana",
+      "name_link": "https://www.boost.org/library/1.90.0/hana/",
+      "c++_version": "C++14",
+      "description": "  A modern C++ metaprogramming library. It provides high level algorithms to manipulate heterogeneous sequences, allows writing type-level computations with a natural syntax, provides tools to introspect user-defined types and much more."
+    },
+    {
+      "name": "Hash2",
+      "name_link": "https://www.boost.org/library/1.90.0/hash2/",
+      "c++_version": "C++11",
+      "description": "  An extensible hashing framework."
+    },
+    {
+      "name": "Heap",
+      "name_link": "https://www.boost.org/library/1.90.0/heap/",
+      "c++_version": "C++14",
+      "description": "  Priority queue data structures."
+    },
+    {
+      "name": "Histogram",
+      "name_link": "https://www.boost.org/library/1.90.0/histogram/",
+      "c++_version": "C++14",
+      "description": "  Fast multi-dimensional histogram with convenient interface for C++14"
+    },
+    {
+      "name": "HOF",
+      "name_link": "https://www.boost.org/library/1.90.0/hof/",
+      "c++_version": "C++11",
+      "description": "  Higher-order functions for C++"
+    },
+    {
+      "name": "ICL",
+      "name_link": "https://www.boost.org/library/1.90.0/icl/",
+      "c++_version": "C++03",
+      "description": "  Interval Container Library, interval sets and maps and aggregation of associated values"
+    },
+    {
+      "name": "Identity Type",
+      "name_link": "https://www.boost.org/library/1.90.0/utilityidentity_type/",
+      "c++_version": "C++03",
+      "description": "  Wrap types within round parenthesis so they can always be passed as macro parameters."
+    },
+    {
+      "name": "In Place Factory, Typed In Place Factory",
+      "name_link": "https://www.boost.org/library/1.90.0/utilityin_place_factories/",
+      "c++_version": "C++03",
+      "description": "  Generic in-place construction of contained objects with a variadic argument-list."
+    },
+    {
+      "name": "Integer",
+      "name_link": "https://www.boost.org/library/1.90.0/integer/",
+      "c++_version": "C++03",
+      "description": "  The organization of boost integer headers and classes is designed to take advantage of <stdint.h> types from the 1999 C standard without resorting to undefined behavior in terms of the 1998 C++ standard. The header <boost/cstdint.hpp> makes the standard integer types safely available in namespace boost without placing any names in namespace std."
+    },
+    {
+      "name": "Interprocess",
+      "name_link": "https://www.boost.org/library/1.90.0/interprocess/",
+      "c++_version": "C++03",
+      "description": "  Shared memory, memory mapped files, process-shared mutexes, condition variables, containers and allocators."
+    },
+    {
+      "name": "Interval",
+      "name_link": "https://www.boost.org/library/1.90.0/numericinterval/",
+      "c++_version": "C++03",
+      "description": "  Extends the usual arithmetic functions to mathematical intervals."
+    },
+    {
+      "name": "Intrusive",
+      "name_link": "https://www.boost.org/library/1.90.0/intrusive/",
+      "c++_version": "C++03",
+      "description": "  Intrusive containers and algorithms."
+    },
+    {
+      "name": "IO",
+      "name_link": "https://www.boost.org/library/1.90.0/io/",
+      "c++_version": "C++03",
+      "description": "  Utilities for the standard I/O library."
+    },
+    {
+      "name": "Iostreams",
+      "name_link": "https://www.boost.org/library/1.90.0/iostreams/",
+      "c++_version": "C++03",
+      "description": "  Boost.IOStreams provides a framework for defining streams, stream buffers and i/o filters."
+    },
+    {
+      "name": "Iterator",
+      "name_link": "https://www.boost.org/library/1.90.0/iterator/",
+      "c++_version": "C++11",
+      "description": "  The Boost Iterator Library contains two parts. The first is a system of concepts which extend the C++ standard iterator requirements. The second is a framework of components for building iterators based on these extended concepts and includes several useful iterator adaptors."
+    },
+    {
+      "name": "JSON",
+      "name_link": "https://www.boost.org/library/1.90.0/json/",
+      "c++_version": "C++11",
+      "description": "  JSON parsing, serialization, and DOM in C++11"
+    },
+    {
+      "name": "Lambda",
+      "name_link": "https://www.boost.org/library/1.90.0/lambda/",
+      "c++_version": "C++03",
+      "description": "  Define small unnamed function objects at the actual call site, and more."
+    },
+    {
+      "name": "Lambda2",
+      "name_link": "https://www.boost.org/library/1.90.0/lambda2/",
+      "c++_version": "C++14",
+      "description": "  A C++14 lambda library."
+    },
+    {
+      "name": "LEAF",
+      "name_link": "https://www.boost.org/library/1.90.0/leaf/",
+      "c++_version": "C++11",
+      "description": "  A lightweight error handling library for C++11."
+    },
+    {
+      "name": "Lexical Cast",
+      "name_link": "https://www.boost.org/library/1.90.0/lexical_cast/",
+      "c++_version": "C++11",
+      "description": "  General literal text conversions, such as an int represented a string, or vice-versa."
+    },
+    {
+      "name": "Locale",
+      "name_link": "https://www.boost.org/library/1.90.0/locale/",
+      "c++_version": "C++11",
+      "description": "  Provide localization and Unicode handling tools for C++."
+    },
+    {
+      "name": "Local Function",
+      "name_link": "https://www.boost.org/library/1.90.0/local_function/",
+      "c++_version": "C++03",
+      "description": "  Program functions locally, within other functions, directly within the scope where they are needed."
+    },
+    {
+      "name": "Lockfree",
+      "name_link": "https://www.boost.org/library/1.90.0/lockfree/",
+      "c++_version": "C++14",
+      "description": "  Lockfree data structures."
+    },
+    {
+      "name": "Log",
+      "name_link": "https://www.boost.org/library/1.90.0/log/",
+      "c++_version": "C++11",
+      "description": "  Logging library."
+    },
+    {
+      "name": "Math",
+      "name_link": "https://www.boost.org/library/1.90.0/math/",
+      "c++_version": "C++14",
+      "description": "  Boost.Math includes several contributions in the domain of mathematics: Floating Point Utilities, Specific Width Floating Point Types, Mathematical Constants, Statistical Distributions, Special Functions, Root Finding and Function Minimization, Polynomials and Rational Functions, Interpolation, and Numerical Integration and Differentiation. Many of these features are templated to support both built-in, and extended width types (e.g. Boost.Multiprecision)"
+    },
+    {
+      "name": "Member Function",
+      "name_link": "https://www.boost.org/library/1.90.0/bindmem_fn/",
+      "c++_version": "C++11",
+      "description": "  Generalized binders for function/object/pointers and member functions."
+    },
+    {
+      "name": "Metaparse",
+      "name_link": "https://www.boost.org/library/1.90.0/metaparse/",
+      "c++_version": "C++03",
+      "description": "  A library for generating compile time parsers parsing embedded DSL code as part of the C++ compilation process"
+    },
+    {
+      "name": "Meta State Machine",
+      "name_link": "https://www.boost.org/library/1.90.0/msm/",
+      "c++_version": "C++03",
+      "description": "  A very high-performance library for expressive UML2 finite state machines."
+    },
+    {
+      "name": "Min-Max",
+      "name_link": "https://www.boost.org/library/1.90.0/algorithmminmax/",
+      "c++_version": "C++03",
+      "description": "  Standard library extensions for simultaneous min/max and min/max element computations."
+    },
+    {
+      "name": "Move",
+      "name_link": "https://www.boost.org/library/1.90.0/move/",
+      "c++_version": "C++03",
+      "description": "  Portable move semantics for C++03 and C++11 compilers."
+    },
+    {
+      "name": "Mp11",
+      "name_link": "https://www.boost.org/library/1.90.0/mp11/",
+      "c++_version": "C++11",
+      "description": "  A C++11 metaprogramming library."
+    },
+    {
+      "name": "MPI",
+      "name_link": "https://www.boost.org/library/1.90.0/mpi/",
+      "c++_version": "C++03",
+      "description": "  Message Passing Interface library, for use in distributed-memory parallel application programming."
+    },
+    {
+      "name": "MPL",
+      "name_link": "https://www.boost.org/library/1.90.0/mpl/",
+      "c++_version": "C++03",
+      "description": "  The Boost.MPL library is a general-purpose, high-level C++ template metaprogramming framework of compile-time algorithms, sequences and metafunctions. It provides a conceptual foundation and an extensive set of powerful and coherent tools that make doing explict metaprogramming in C++ as easy and enjoyable as possible within the current language."
+    },
+    {
+      "name": "MQTT5",
+      "name_link": "https://www.boost.org/library/1.90.0/mqtt5/",
+      "c++_version": "C++17",
+      "description": "  MQTT5 client library built on top of Boost.Asio."
+    },
+    {
+      "name": "Multi-Array",
+      "name_link": "https://www.boost.org/library/1.90.0/multi_array/",
+      "c++_version": "C++03",
+      "description": "  Boost.MultiArray provides a generic N-dimensional array concept definition and common implementations of that interface."
+    },
+    {
+      "name": "Multi-Index",
+      "name_link": "https://www.boost.org/library/1.90.0/multi_index/",
+      "c++_version": "C++03",
+      "description": "  The Boost Multi-index Containers Library provides a class template named multi_index_container which enables the construction of containers maintaining one or more indices with different sorting and access semantics."
+    },
+    {
+      "name": "Multiprecision",
+      "name_link": "https://www.boost.org/library/1.90.0/multiprecision/",
+      "c++_version": "C++14",
+      "description": "  Extended precision arithmetic types for floating point, integer, and rational arithmetic."
+    },
+    {
+      "name": "MySQL",
+      "name_link": "https://www.boost.org/library/1.90.0/mysql/",
+      "c++_version": "C++11",
+      "description": "  MySQL client library built on top of Boost.Asio."
+    },
+    {
+      "name": "Nowide",
+      "name_link": "https://www.boost.org/library/1.90.0/nowide/",
+      "c++_version": "C++11",
+      "description": "  Standard library functions with UTF-8 API on Windows."
+    },
+    {
+      "name": "Numeric Conversion",
+      "name_link": "https://www.boost.org/library/1.90.0/numericconversion/",
+      "c++_version": "C++03",
+      "description": "  Optimized Policy-based Numeric Conversions."
+    },
+    {
+      "name": "Odeint",
+      "name_link": "https://www.boost.org/library/1.90.0/numericodeint/",
+      "c++_version": "C++11",
+      "description": "  Solving ordinary differential equations."
+    },
+    {
+      "name": "OpenMethod",
+      "name_link": "https://www.boost.org/library/1.90.0/openmethod/",
+      "c++_version": "C++17",
+      "description": "  Open-methods for C++17 and above."
+    },
+    {
+      "name": "Operators",
+      "name_link": "https://www.boost.org/library/1.90.0/utilityoperators/",
+      "c++_version": "C++03",
+      "description": "  Templates to simplify operator definition in arithmetic classes and iterators."
+    },
+    {
+      "name": "Optional",
+      "name_link": "https://www.boost.org/library/1.90.0/optional/",
+      "c++_version": "C++11",
+      "description": "  A value-semantic, type-safe wrapper for representing 'optional' (or 'nullable') objects of a given type. An optional object may or may not contain a value of the underlying type."
+    },
+    {
+      "name": "Outcome",
+      "name_link": "https://www.boost.org/library/1.90.0/outcome/",
+      "c++_version": "C++14",
+      "description": "  A deterministic failure handling library partially simulating lightweight exceptions."
+    },
+    {
+      "name": "Parameter",
+      "name_link": "https://www.boost.org/library/1.90.0/parameter/",
+      "c++_version": "C++03",
+      "description": "  Boost.Parameter Library - Write functions that accept arguments by name."
+    },
+    {
+      "name": "Parameter Python Bindings",
+      "name_link": "https://www.boost.org/library/1.90.0/parameter_python/",
+      "c++_version": "C++03",
+      "description": "  Boost.Parameter Library Python bindings."
+    },
+    {
+      "name": "Parser",
+      "name_link": "https://www.boost.org/library/1.90.0/parser/",
+      "c++_version": "C++17",
+      "description": "  A parser combinator library."
+    },
+    {
+      "name": "PFR",
+      "name_link": "https://www.boost.org/library/1.90.0/pfr/",
+      "c++_version": "C++14",
+      "description": "  Basic reflection  for user defined types."
+    },
+    {
+      "name": "Phoenix",
+      "name_link": "https://www.boost.org/library/1.90.0/phoenix/",
+      "c++_version": "C++03",
+      "description": "  Define small unnamed function objects at the actual call site, and more."
+    },
+    {
+      "name": "Pointer Container",
+      "name_link": "https://www.boost.org/library/1.90.0/ptr_container/",
+      "c++_version": "C++11",
+      "description": "  Containers for storing heap-allocated polymorphic objects to ease OO-programming."
+    },
+    {
+      "name": "PolyCollection",
+      "name_link": "https://www.boost.org/library/1.90.0/poly_collection/",
+      "c++_version": "C++11",
+      "description": "  Fast containers of polymorphic objects."
+    },
+    {
+      "name": "Polygon",
+      "name_link": "https://www.boost.org/library/1.90.0/polygon/",
+      "c++_version": "C++03",
+      "description": "  Voronoi diagram construction and booleans/clipping, resizing/offsetting and more for planar polygons with integral coordinates."
+    },
+    {
+      "name": "Pool",
+      "name_link": "https://www.boost.org/library/1.90.0/pool/",
+      "c++_version": "C++03",
+      "description": "  Memory pool management."
+    },
+    {
+      "name": "Predef",
+      "name_link": "https://www.boost.org/library/1.90.0/predef/",
+      "c++_version": "C++98",
+      "description": "  This library defines a set of compiler, architecture, operating system, library, and other version numbers from the information it can gather of C, C++, Objective C, and Objective C++ predefined macros or those defined in generally available headers."
+    },
+    {
+      "name": "Preprocessor",
+      "name_link": "https://www.boost.org/library/1.90.0/preprocessor/",
+      "c++_version": "C++03",
+      "description": "  Preprocessor metaprogramming tools including repetition and recursion."
+    },
+    {
+      "name": "Process",
+      "name_link": "https://www.boost.org/library/1.90.0/process/",
+      "c++_version": "C++11",
+      "description": "  Library to create processes in a portable way."
+    },
+    {
+      "name": "Program Options",
+      "name_link": "https://www.boost.org/library/1.90.0/program_options/",
+      "c++_version": "C++11",
+      "description": "  The program_options library allows program developers to obtain program options, that is (name, value) pairs from the user, via conventional methods such as command line and config file."
+    },
+    {
+      "name": "Property Map",
+      "name_link": "https://www.boost.org/library/1.90.0/property_map/",
+      "c++_version": "C++11",
+      "description": "  Concepts defining interfaces which map key objects to value objects."
+    },
+    {
+      "name": "Property Map (Parallel)",
+      "name_link": "https://www.boost.org/library/1.90.0/property_map_parallel/",
+      "c++_version": "C++03",
+      "description": "  Parallel extensions to Property Map for use with Parallel Graph."
+    },
+    {
+      "name": "Property Tree",
+      "name_link": "https://www.boost.org/library/1.90.0/property_tree/",
+      "c++_version": "C++11",
+      "description": "  A tree data structure especially suited to storing configuration data."
+    },
+    {
+      "name": "Proto",
+      "name_link": "https://www.boost.org/library/1.90.0/proto/",
+      "c++_version": "C++03",
+      "description": "  Expression template library and compiler construction toolkit for domain-specific embedded languages."
+    },
+    {
+      "name": "Python",
+      "name_link": "https://www.boost.org/library/1.90.0/python/",
+      "c++_version": "C++03",
+      "description": "  The Boost Python Library is a framework for interfacing Python and C++. It allows you to quickly and seamlessly expose C++ classes functions and objects to Python, and vice-versa, using no special tools -- just your C++ compiler."
+    },
+    {
+      "name": "QVM",
+      "name_link": "https://www.boost.org/library/1.90.0/qvm/",
+      "c++_version": "C++03",
+      "description": "  Generic C++ library for working with Quaternions Vectors and Matrices."
+    },
+    {
+      "name": "Random",
+      "name_link": "https://www.boost.org/library/1.90.0/random/",
+      "c++_version": "C++11",
+      "description": "  A complete system for random number generation."
+    },
+    {
+      "name": "Range",
+      "name_link": "https://www.boost.org/library/1.90.0/range/",
+      "c++_version": "C++03",
+      "description": "  A new infrastructure for generic algorithms that builds on top of the new iterator concepts."
+    },
+    {
+      "name": "Ratio",
+      "name_link": "https://www.boost.org/library/1.90.0/ratio/",
+      "c++_version": "C++11",
+      "description": "  Compile time rational arithmetic. C++11."
+    },
+    {
+      "name": "Rational",
+      "name_link": "https://www.boost.org/library/1.90.0/rational/",
+      "c++_version": "C++11",
+      "description": "  A rational number class."
+    },
+    {
+      "name": "Redis",
+      "name_link": "https://www.boost.org/library/1.90.0/redis/",
+      "c++_version": "C++17",
+      "description": "  Redis async client library built on top of Boost.Asio."
+    },
+    {
+      "name": "Ref",
+      "name_link": "https://www.boost.org/library/1.90.0/bindref/",
+      "c++_version": "C++03",
+      "description": "  A utility library for passing references to generic functions."
+    },
+    {
+      "name": "Regex",
+      "name_link": "https://www.boost.org/library/1.90.0/regex/",
+      "c++_version": "C++11",
+      "description": "  Regular expression library."
+    },
+    {
+      "name": "Result Of",
+      "name_link": "https://www.boost.org/library/1.90.0/utilityresult_of/",
+      "c++_version": "C++03",
+      "description": "  Determines the type of a function call expression."
+    },
+    {
+      "name": "Safe Numerics",
+      "name_link": "https://www.boost.org/library/1.90.0/safe_numerics/",
+      "c++_version": "C++14",
+      "description": "  Guaranteed Correct Integer Arithmetic"
+    },
+    {
+      "name": "Scope",
+      "name_link": "https://www.boost.org/library/1.90.0/scope/",
+      "c++_version": "C++11",
+      "description": "  A collection of scope guards and a unique_resource wrapper."
+    },
+    {
+      "name": "Scope Exit",
+      "name_link": "https://www.boost.org/library/1.90.0/scope_exit/",
+      "c++_version": "C++03",
+      "description": "  Execute arbitrary code at scope exit."
+    },
+    {
+      "name": "Serialization",
+      "name_link": "https://www.boost.org/library/1.90.0/serialization/",
+      "c++_version": "C++03",
+      "description": "  Serialization for persistence and marshalling."
+    },
+    {
+      "name": "Signals2",
+      "name_link": "https://www.boost.org/library/1.90.0/signals2/",
+      "c++_version": "C++03",
+      "description": "  Managed signals & slots callback implementation (thread-safe version 2)."
+    },
+    {
+      "name": "Smart Ptr",
+      "name_link": "https://www.boost.org/library/1.90.0/smart_ptr/",
+      "c++_version": "C++11",
+      "description": "  Smart pointer class templates."
+    },
+    {
+      "name": "Sort",
+      "name_link": "https://www.boost.org/library/1.90.0/sort/",
+      "c++_version": "C++03",
+      "description": "  High-performance templated sort functions."
+    },
+    {
+      "name": "Spirit",
+      "name_link": "https://www.boost.org/library/1.90.0/spirit/",
+      "c++_version": "C++03",
+      "description": "  LL parser framework represents parsers directly as EBNF grammars in inlined C++."
+    },
+    {
+      "name": "Stacktrace",
+      "name_link": "https://www.boost.org/library/1.90.0/stacktrace/",
+      "c++_version": "C++11",
+      "description": "  Gather, store, copy and print backtraces."
+    },
+    {
+      "name": "Statechart",
+      "name_link": "https://www.boost.org/library/1.90.0/statechart/",
+      "c++_version": "C++03",
+      "description": "  Boost.Statechart - Arbitrarily complex finite state machines can be implemented in easily readable and maintainable C++ code."
+    },
+    {
+      "name": "Static Assert",
+      "name_link": "https://www.boost.org/library/1.90.0/static_assert/",
+      "c++_version": "C++03",
+      "description": "  Static assertions (compile time assertions)."
+    },
+    {
+      "name": "Static String",
+      "name_link": "https://www.boost.org/library/1.90.0/static_string/",
+      "c++_version": "C++11",
+      "description": "  A fixed capacity dynamically sized string."
+    },
+    {
+      "name": "Stl_interfaces",
+      "name_link": "https://www.boost.org/library/1.90.0/stl_interfaces/",
+      "c++_version": "C++14",
+      "description": "  C++14 and later CRTP templates for defining iterators, views, and containers."
+    },
+    {
+      "name": "String Algo",
+      "name_link": "https://www.boost.org/library/1.90.0/algorithmstring/",
+      "c++_version": "C++03",
+      "description": "  String algorithms library."
+    },
+    {
+      "name": "String View",
+      "name_link": "https://www.boost.org/library/1.90.0/utilitystring_view/",
+      "c++_version": "C++03",
+      "description": "  String view templates."
+    },
+    {
+      "name": "Swap",
+      "name_link": "https://www.boost.org/library/1.90.0/utilityswap/",
+      "c++_version": "C++03",
+      "description": "  Enhanced generic swap function."
+    },
+    {
+      "name": "System",
+      "name_link": "https://www.boost.org/library/1.90.0/system/",
+      "c++_version": "C++11",
+      "description": "  Extensible error reporting."
+    },
+    {
+      "name": "Test",
+      "name_link": "https://www.boost.org/library/1.90.0/test/",
+      "c++_version": "C++11",
+      "description": "  Support for simple program testing, full unit testing, and for program execution monitoring."
+    },
+    {
+      "name": "Thread",
+      "name_link": "https://www.boost.org/library/1.90.0/thread/",
+      "c++_version": "C++11",
+      "description": "  Portable C++ multi-threading. C++11, C++14, C++17."
+    },
+    {
+      "name": "ThrowException",
+      "name_link": "https://www.boost.org/library/1.90.0/throw_exception/",
+      "c++_version": "C++03",
+      "description": "  A common infrastructure for throwing exceptions from Boost libraries."
+    },
+    {
+      "name": "Timer",
+      "name_link": "https://www.boost.org/library/1.90.0/timer/",
+      "c++_version": "C++03",
+      "description": "  Event timer, progress timer, and progress display classes."
+    },
+    {
+      "name": "Tokenizer",
+      "name_link": "https://www.boost.org/library/1.90.0/tokenizer/",
+      "c++_version": "C++03",
+      "description": "  Break of a string or other character sequence into a series of tokens."
+    },
+    {
+      "name": "Tribool",
+      "name_link": "https://www.boost.org/library/1.90.0/logictribool/",
+      "c++_version": "C++03",
+      "description": "  3-state boolean type library."
+    },
+    {
+      "name": "TTI",
+      "name_link": "https://www.boost.org/library/1.90.0/tti/",
+      "c++_version": "C++03",
+      "description": "  Type Traits Introspection library."
+    },
+    {
+      "name": "Tuple",
+      "name_link": "https://www.boost.org/library/1.90.0/tuple/",
+      "c++_version": "C++03",
+      "description": "  Ease definition of functions returning multiple values, and more."
+    },
+    {
+      "name": "Type Erasure",
+      "name_link": "https://www.boost.org/library/1.90.0/type_erasure/",
+      "c++_version": "C++03",
+      "description": "  Runtime polymorphism based on concepts."
+    },
+    {
+      "name": "Type Index",
+      "name_link": "https://www.boost.org/library/1.90.0/type_index/",
+      "c++_version": "C++11",
+      "description": "  Runtime/Compile time copyable type info."
+    },
+    {
+      "name": "Typeof",
+      "name_link": "https://www.boost.org/library/1.90.0/typeof/",
+      "c++_version": "C++11",
+      "description": "  Typeof operator emulation."
+    },
+    {
+      "name": "Type Traits",
+      "name_link": "https://www.boost.org/library/1.90.0/type_traits/",
+      "c++_version": "C++03",
+      "description": "  Templates for fundamental properties of types."
+    },
+    {
+      "name": "uBLAS",
+      "name_link": "https://www.boost.org/library/1.90.0/numericublas/",
+      "c++_version": "C++03",
+      "description": "  uBLAS provides tensor, matrix, and vector classes as well as basic linear algebra routines. Several dense, packed and sparse storage schemes are supported."
+    },
+    {
+      "name": "Units",
+      "name_link": "https://www.boost.org/library/1.90.0/units/",
+      "c++_version": "C++03",
+      "description": "  Zero-overhead dimensional analysis and unit/quantity manipulation and conversion."
+    },
+    {
+      "name": "Unordered",
+      "name_link": "https://www.boost.org/library/1.90.0/unordered/",
+      "c++_version": "C++11",
+      "description": "  Unordered associative containers."
+    },
+    {
+      "name": "URL",
+      "name_link": "https://www.boost.org/library/1.90.0/url/",
+      "c++_version": "C++11",
+      "description": "  URL parsing in C++11"
+    },
+    {
+      "name": "Utility",
+      "name_link": "https://www.boost.org/library/1.90.0/utility/",
+      "c++_version": "C++03",
+      "description": "  Various utilities, such as base-from-member idiom and binary literals in C++03."
+    },
+    {
+      "name": "Uuid",
+      "name_link": "https://www.boost.org/library/1.90.0/uuid/",
+      "c++_version": "C++11",
+      "description": "  A universally unique identifier."
+    },
+    {
+      "name": "Value Initialized",
+      "name_link": "https://www.boost.org/library/1.90.0/utilityvalue_initialized/",
+      "c++_version": "C++03",
+      "description": "  Wrapper for uniform-syntax value initialization, based on the original idea of David Abrahams."
+    },
+    {
+      "name": "Variant",
+      "name_link": "https://www.boost.org/library/1.90.0/variant/",
+      "c++_version": "C++11",
+      "description": "  Safe, generic, stack-based discriminated union container."
+    },
+    {
+      "name": "Variant2",
+      "name_link": "https://www.boost.org/library/1.90.0/variant2/",
+      "c++_version": "C++11",
+      "description": "  A never-valueless, strong guarantee implementation of std::variant."
+    },
+    {
+      "name": "VMD",
+      "name_link": "https://www.boost.org/library/1.90.0/vmd/",
+      "c++_version": "C++03",
+      "description": "  Variadic Macro Data library."
+    },
+    {
+      "name": "Wave",
+      "name_link": "https://www.boost.org/library/1.90.0/wave/",
+      "c++_version": "C++11",
+      "description": "  The Boost.Wave library is a Standards conformant, and highly configurable implementation of the mandated C99/C++ preprocessor functionality packed behind an easy to use iterator interface."
+    },
+    {
+      "name": "WinAPI",
+      "name_link": "https://www.boost.org/library/1.90.0/winapi/",
+      "c++_version": "C++03",
+      "description": "  Windows API abstraction layer."
+    },
+    {
+      "name": "Xpressive",
+      "name_link": "https://www.boost.org/library/1.90.0/xpressive/",
+      "c++_version": "C++03",
+      "description": "  Regular expressions that can be written as strings or as expression templates, and which can refer to each other and themselves recursively with the power of context-free grammars."
+    },
+    {
+      "name": "YAP",
+      "name_link": "https://www.boost.org/library/1.90.0/yap/",
+      "c++_version": "C++14",
+      "description": "  An expression template library for C++14 and later."
+    }
+  ]
+}

@@ -16,6 +16,7 @@ dependencies = [
 "jupyter>=1.0.0",
 "ipykernel>=6.20.0",
 "tavily-python>=0.5.0",
+"python-dotenv>=1.0.0",
 ]
 
 [project.optional-dependencies]

@@ -38,7 +38,7 @@ For the verification message when no clarification is needed:
 - Keep the message concise and professional
 """
 
-transform_messages_into_research_topic_human_msg_prompt = """You will be given a set of messages that have been exchanged so far between yourself and the user. 
+transform_messages_into_research_topic_human_msg_prompt = """You will be given a set of messages that have been exchanged so far between yourself and the user.
 Your job is to translate these messages into a more detailed and concrete research question that will be used to guide the research.
 
 The messages that have been exchanged so far between yourself and the user are:
@@ -184,7 +184,7 @@ Example 2 (for a scientific article):
 ```json
 {{
    "summary": "A new study published in Nature Climate Change reveals that global sea levels are rising faster than previously thought. Researchers analyzed satellite data from 1993 to 2022 and found that the rate of sea-level rise has accelerated by 0.08 mm/year² over the past three decades. This acceleration is primarily attributed to melting ice sheets in Greenland and Antarctica. The study projects that if current trends continue, global sea levels could rise by up to 2 meters by 2100, posing significant risks to coastal communities worldwide.",
-   "key_excerpts": "Our findings indicate a clear acceleration in sea-level rise, which has significant implications for coastal planning and adaptation strategies, lead author Dr. Emily Brown stated. The rate of ice sheet melt in Greenland and Antarctica has tripled since the 1990s, the study reports. Without immediate and substantial reductions in greenhouse gas emissions, we are looking at potentially catastrophic sea-level rise by the end of this century, warned co-author Professor Michael Green."  
+   "key_excerpts": "Our findings indicate a clear acceleration in sea-level rise, which has significant implications for coastal planning and adaptation strategies, lead author Dr. Emily Brown stated. The rate of ice sheet melt in Greenland and Antarctica has tripled since the 1990s, the study reports. Without immediate and substantial reductions in greenhouse gas emissions, we are looking at potentially catastrophic sea-level rise by the end of this century, warned co-author Professor Michael Green."
 }}
 ```
 
@@ -311,7 +311,7 @@ compress_research_human_message = """All above messages are about research condu
 
 RESEARCH TOPIC: {research_topic}
 
-Your task is to clean up these research findings while preserving ALL information that is relevant to answering this specific research question. 
+Your task is to clean up these research findings while preserving ALL information that is relevant to answering this specific research question.
 
 CRITICAL REQUIREMENTS:
 - DO NOT summarize or paraphrase the information - preserve it verbatim
@@ -323,7 +323,7 @@ CRITICAL REQUIREMENTS:
 
 The cleaned findings will be used for final report generation, so comprehensiveness is critical."""
 
-final_report_generation_with_helpfulness_insightfulness_hit_citation_prompt = """Based on all the research conducted and draft report, create a comprehensive, well-structured answer to the overall research brief:
+final_report_generation_with_helpfulness_insightfulness_hit_citation_prompt = """Based on all the research conducted and draft report, create a CONCISE, READABLE, well-structured answer to the overall research brief:
 <Research Brief>
 {research_brief}
 </Research Brief>
@@ -344,12 +344,22 @@ Here is the draft report:
 {draft_report}
 </Draft Report>
 
-Please create a detailed answer to the overall research brief that:
+Please create a CONCISE, READABLE answer to the overall research brief that:
 1. Is well-organized with proper headings (# for title, ## for sections, ### for subsections)
 2. Includes specific facts and insights from the research
 3. References relevant sources using [Title](URL) format
-4. Provides a balanced, thorough analysis. Be as comprehensive as possible, and include all information that is relevant to the overall research question. People are using you for deep research and will expect detailed, comprehensive answers.
+4. Provides a balanced, thorough analysis. Be comprehensive but CONCISE - prioritize key insights over exhaustive detail.
 5. Includes a "Sources" section at the end with all referenced links
+
+**CRITICAL: CONCISENESS AND READABILITY REQUIREMENTS:**
+- Keep paragraphs SHORT (2-4 sentences maximum per paragraph)
+- Use bullet points and numbered lists liberally for better scannability
+- Use tables for comparisons and structured data
+- Avoid long, dense paragraphs - break them into shorter, digestible chunks
+- Prioritize clarity and readability over verbosity
+- Each section should be focused and to-the-point
+- Remove redundant information and unnecessary elaboration
+- Do not use bold formatting and quotation marks within a sentence.
 
 You can structure your report in a number of different ways. Here are some examples:
 
@@ -381,15 +391,17 @@ REMEMBER: Section is a VERY fluid and loose concept. You can structure your repo
 Make sure that your sections are cohesive, and make sense for the reader.
 
 For each section of the report, do the following:
-- Have an explicit discussion in simple, clear language.
-- DO NOT oversimplify. Clarify when a concept is ambiguous.
-- DO NOT list facts in bullet points. write in paragraph form.
-- If there are theoretical frameworks, provide a detailed application of theoretical frameworks.
-- For comparison and conclusion, include a summary table.
+- Write in simple, clear language with SHORT paragraphs (2-4 sentences max)
+- Use bullet points and lists liberally - they are easier to scan than long paragraphs
+- Use tables for comparisons, metrics, and structured data
+- Break complex topics into digestible chunks with subheadings
+- For comparison and conclusion, ALWAYS include a summary table
 - Use ## for section title (Markdown format) for each section of the report
-- Do NOT ever refer to yourself as the writer of the report. This should be a professional report without any self-referential language. 
+- Do NOT ever refer to yourself as the writer of the report. This should be a professional report without any self-referential language.
 - Do not say what you are doing in the report. Just write the report without any commentary from yourself.
-- Each section should be as long as necessary to deeply answer the question with the information you have gathered. It is expected that sections will be fairly long and verbose. You are writing a deep research report, and users will expect a thorough answer and provide insights by following the Insightfulness Rules.
+- Keep sections CONCISE and focused - aim for 3-5 short paragraphs per section maximum
+- Prioritize key insights and actionable information over exhaustive detail
+- Remove redundant information and unnecessary elaboration
 
 <Insightfulness Rules>
 - Granular breakdown - Does the response have a granular breakdown of the topics and their specific causes and specific impacts?
@@ -425,7 +437,7 @@ Format the report in clear markdown with proper structure and include source ref
 </Citation Rules>
 """
 
-report_generation_with_draft_insight_prompt = """Based on all the research conducted and draft report, create a comprehensive, well-structured answer to the overall research brief:
+report_generation_with_draft_insight_prompt = """Based on all the research conducted and draft report, create a CONCISE, READABLE, well-structured answer to the overall research brief:
 <Research Brief>
 {research_brief}
 </Research Brief>
@@ -446,12 +458,22 @@ Here are the findings from the research that you conducted:
 {findings}
 </Findings>
 
-Please create a detailed answer to the overall research brief that:
+Please create a CONCISE, READABLE answer to the overall research brief that:
 1. Is well-organized with proper headings (# for title, ## for sections, ### for subsections)
 2. Includes specific facts and insights from the research
 3. References relevant sources using [Title](URL) format
-4. Provides a balanced, thorough analysis. Be as comprehensive as possible, and include all information that is relevant to the overall research question. People are using you for deep research and will expect detailed, comprehensive answers.
+4. Provides a balanced, thorough analysis. Be comprehensive but CONCISE - prioritize key insights over exhaustive detail.
 5. Includes a "Sources" section at the end with all referenced links
+
+**CRITICAL: CONCISENESS AND READABILITY REQUIREMENTS:**
+- Keep paragraphs SHORT (2-4 sentences maximum per paragraph)
+- Use bullet points and numbered lists liberally for better scannability
+- Use tables for comparisons and structured data
+- Avoid long, dense paragraphs - break them into shorter, digestible chunks
+- Prioritize clarity and readability over verbosity
+- Each section should be focused and to-the-point
+- Remove redundant information and unnecessary elaboration
+- Do not use bold formatting and quotation marks within a sentence.
 
 You can structure your report in a number of different ways. Here are some examples:
 
@@ -483,13 +505,17 @@ REMEMBER: Section is a VERY fluid and loose concept. You can structure your repo
 Make sure that your sections are cohesive, and make sense for the reader.
 
 For each section of the report, do the following:
-- Use simple, clear language
+- Write in simple, clear language with SHORT paragraphs (2-4 sentences max)
+- Use bullet points and lists liberally - they are easier to scan than long paragraphs
+- Use tables for comparisons, metrics, and structured data
+- Break complex topics into digestible chunks with subheadings
 - Keep important details from the research findings
 - Use ## for section title (Markdown format) for each section of the report
-- Do NOT ever refer to yourself as the writer of the report. This should be a professional report without any self-referential language. 
+- Do NOT ever refer to yourself as the writer of the report. This should be a professional report without any self-referential language.
 - Do not say what you are doing in the report. Just write the report without any commentary from yourself.
-- Each section should be as long as necessary to deeply answer the question with the information you have gathered. It is expected that sections will be fairly long and verbose. You are writing a deep research report, and users will expect a thorough answer.
-- Use bullet points to list out information when appropriate, but by default, write in paragraph form.
+- Keep sections CONCISE and focused - aim for 3-5 short paragraphs per section maximum
+- Prioritize key insights and actionable information over exhaustive detail
+- Remove redundant information and unnecessary elaboration
 
 REMEMBER:
 The brief and research may be in English, but you need to translate this information to the right language when writing the final answer.
@@ -509,7 +535,7 @@ Format the report in clear markdown with proper structure and include source ref
 </Citation Rules>
 """
 
-draft_report_generation_prompt = """Based on all the research in your knowledge base, create a comprehensive, well-structured answer to the overall research brief:
+draft_report_generation_prompt = """Based on all the research in your knowledge base, create a CONCISE, READABLE, well-structured answer to the overall research brief:
 <Research Brief>
 {research_brief}
 </Research Brief>
@@ -520,12 +546,22 @@ This is critical. The user will only understand the answer if it is written in t
 
 Today's date is {date}.
 
-Please create a detailed answer to the overall research brief that:
+Please create a CONCISE, READABLE answer to the overall research brief that:
 1. Is well-organized with proper headings (# for title, ## for sections, ### for subsections)
 2. Includes specific facts and insights from the research
 3. References relevant sources using [Title](URL) format
-4. Provides a balanced, thorough analysis. Be as comprehensive as possible, and include all information that is relevant to the overall research question. People are using you for deep research and will expect detailed, comprehensive answers.
+4. Provides a balanced, thorough analysis. Be comprehensive but CONCISE - prioritize key insights over exhaustive detail.
 5. Includes a "Sources" section at the end with all referenced links
+
+**CRITICAL: CONCISENESS AND READABILITY REQUIREMENTS:**
+- Keep paragraphs SHORT (2-4 sentences maximum per paragraph)
+- Use bullet points and numbered lists liberally for better scannability
+- Use tables for comparisons and structured data
+- Avoid long, dense paragraphs - break them into shorter, digestible chunks
+- Do not use bold formatting and quotation marks within a sentence.
+- Prioritize clarity and readability over verbosity
+- Each section should be focused and to-the-point
+- Remove redundant information and unnecessary elaboration
 
 You can structure your report in a number of different ways. Here are some examples:
 
@@ -557,9 +593,14 @@ REMEMBER: Section is a VERY fluid and loose concept. You can structure your repo
 Make sure that your sections are cohesive, and make sense for the reader.
 
 For each section of the report, do the following:
-- Use simple, clear language
+- Write in simple, clear language with SHORT paragraphs (2-4 sentences max)
+- Use bullet points and lists liberally - they are easier to scan than long paragraphs
+- Use tables for comparisons, metrics, and structured data
+- Break complex topics into digestible chunks with subheadings
 - Use ## for section title (Markdown format) for each section of the report
-- Do NOT ever refer to yourself as the writer of the report. This should be a professional report without any self-referential language. 
+- Keep sections CONCISE and focused - aim for 3-5 short paragraphs per section maximum
+- Prioritize key insights and actionable information over exhaustive detail
+- Do NOT ever refer to yourself as the writer of the report. This should be a professional report without any self-referential language.
 - Do not say what you are doing in the report. Just write the report without any commentary from yourself.
 - Each section should be as long as necessary to deeply answer the question with the information you have gathered. It is expected that sections will be fairly long and verbose. You are writing a deep research report, and users will expect a thorough answer.
 - Use bullet points to list out information when appropriate, but by default, write in paragraph form.

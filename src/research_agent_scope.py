@@ -12,30 +12,31 @@ whether sufficient context exists to proceed with research.
 from datetime import datetime
 from typing_extensions import Literal
 
-from langchain.chat_models import init_chat_model
+from deep_research.model_config import get_model
 from langchain_core.messages import HumanMessage, get_buffer_string
 from langgraph.graph import StateGraph, START, END
 from langgraph.types import Command
 
 from deep_research.prompts import transform_messages_into_research_topic_human_msg_prompt, draft_report_generation_prompt, clarify_with_user_instructions
 from deep_research.state_scope import AgentState, ResearchQuestion, AgentInputState, DraftReport
+from deep_research.usage_tracker import get_tracker
 
 # ===== UTILITY FUNCTIONS =====
 
 def get_today_str() -> str:
     """Get current date in a human-readable format."""
-    return datetime.now().strftime("%a %b %-d, %Y")
+    return datetime.now().strftime("%d/%m/%Y, %H:%M:%S")
 
 # ===== CONFIGURATION =====
 
 # Initialize model
-model = init_chat_model(model="openai:gpt-5")
-creative_model = init_chat_model(model="openai:gpt-5")
+model = get_model()
+creative_model = get_model()
 
 # ===== WORKFLOW NODES =====
 
 def clarify_with_user(state: AgentState) -> Command[Literal["write_research_brief"]]:
-    #uncomment if you want to enable this module  
+    #uncomment if you want to enable this module
     """
     Determine if the user's request contains sufficient information to proceed with research.
 
@@ -50,7 +51,7 @@ def clarify_with_user(state: AgentState) -> Command[Literal["write_research_brie
     # Invoke the model with clarification instructions
     response = structured_output_model.invoke([
         HumanMessage(content=clarify_with_user_instructions.format(
-            messages=get_buffer_string(messages=state["messages"]), 
+            messages=get_buffer_string(messages=state["messages"]),
             date=get_today_str()
         ))
     ])
@@ -58,7 +59,7 @@ def clarify_with_user(state: AgentState) -> Command[Literal["write_research_brie
     # Route based on clarification need
     if response.need_clarification:
         return Command(
-            goto=END, 
+            goto=END,
             update={"messages": [AIMessage(content=response.question)]}
         )
     else:
@@ -77,19 +78,43 @@ def write_research_brief(state: AgentState) -> Command[Literal["write_draft_repo
     # Set up structured output model
     structured_output_model = model.with_structured_output(ResearchQuestion)
 
-    # Generate research brief from conversation history
-    response = structured_output_model.invoke([
-        HumanMessage(content=transform_messages_into_research_topic_human_msg_prompt.format(
-            messages=get_buffer_string(state.get("messages", [])),
-            date=get_today_str()
-        ))
-    ])
+    try:
+        # Generate research brief from conversation history
+        response = structured_output_model.invoke([
+            HumanMessage(content=transform_messages_into_research_topic_human_msg_prompt.format(
+                messages=get_buffer_string(state.get("messages", [])),
+                date=get_today_str()
+            ))
+        ])
 
-    # Update state with generated research brief and pass it to the supervisor
-    return Command(
-            goto="write_draft_report", 
-            update={"research_brief": response.research_brief}
-        )
+        # Track token usage
+        tracker = get_tracker()
+        tracker.track_openai_response(response)
+
+        # Update state with generated research brief and pass it to the supervisor
+        return Command(
+                goto="write_draft_report",
+                update={"research_brief": response.research_brief}
+            )
+    except Exception as e:
+        error_msg = str(e)
+        # Check for common API errors
+        if "429" in error_msg or "quota" in error_msg.lower() or "insufficient_quota" in error_msg.lower():
+            raise RuntimeError(
+                "OpenAI API Quota Exceeded: Your OpenAI API key has exceeded its quota or billing limit. "
+                "Please check your OpenAI account billing and usage at https://platform.openai.com/usage. "
+                "You may need to add payment information or upgrade your plan."
+            ) from e
+        elif "401" in error_msg or "invalid" in error_msg.lower() and "api key" in error_msg.lower():
+            raise RuntimeError(
+                "OpenAI API Key Error: Your API key is invalid or expired. "
+                "Please check your OPENAI_API_KEY in your .env file or environment variables."
+            ) from e
+        else:
+            raise RuntimeError(
+                f"Error generating research brief: {error_msg}. "
+                "Please check your API configuration and try again."
+            ) from e
 
 def write_draft_report(state: AgentState) -> Command[Literal["__end__"]]:
     """
@@ -105,13 +130,37 @@ def write_draft_report(state: AgentState) -> Command[Literal["__end__"]]:
         date=get_today_str()
     )
 
-    response = structured_output_model.invoke([HumanMessage(content=draft_report_prompt)])
+    try:
+        response = structured_output_model.invoke([HumanMessage(content=draft_report_prompt)])
 
-    return {
-        "research_brief": research_brief,
-        "draft_report": response.draft_report, 
-        "supervisor_messages": ["Here is the draft report: " + response.draft_report, research_brief]
-    }
+        # Track token usage
+        tracker = get_tracker()
+        tracker.track_openai_response(response)
+
+        return {
+            "research_brief": research_brief,
+            "draft_report": response.draft_report,
+            "supervisor_messages": ["Here is the draft report: " + response.draft_report, research_brief]
+        }
+    except Exception as e:
+        error_msg = str(e)
+        # Check for common API errors
+        if "429" in error_msg or "quota" in error_msg.lower() or "insufficient_quota" in error_msg.lower():
+            raise RuntimeError(
+                "OpenAI API Quota Exceeded: Your OpenAI API key has exceeded its quota or billing limit. "
+                "Please check your OpenAI account billing and usage at https://platform.openai.com/usage. "
+                "You may need to add payment information or upgrade your plan."
+            ) from e
+        elif "401" in error_msg or "invalid" in error_msg.lower() and "api key" in error_msg.lower():
+            raise RuntimeError(
+                "OpenAI API Key Error: Your API key is invalid or expired. "
+                "Please check your OPENAI_API_KEY in your .env file or environment variables."
+            ) from e
+        else:
+            raise RuntimeError(
+                f"Error generating draft report: {error_msg}. "
+                "Please check your API configuration and try again."
+            ) from e
 
 # ===== GRAPH CONSTRUCTION =====
 

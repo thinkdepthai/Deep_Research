@@ -10,19 +10,20 @@ from pathlib import Path
 from datetime import datetime
 from typing_extensions import Annotated, List, Literal
 
-from langchain.chat_models import init_chat_model 
+from deep_research.model_config import get_model, get_light_model
 from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool, InjectedToolArg
 from tavily import TavilyClient
 
 from deep_research.state_research import Summary
 from deep_research.prompts import summarize_webpage_prompt, report_generation_with_draft_insight_prompt
+from deep_research.usage_tracker import get_tracker
 
 # ===== UTILITY FUNCTIONS =====
 
 def get_today_str() -> str:
     """Get current date in a human-readable format."""
-    return datetime.now().strftime("%a %b %-d, %Y")
+    return datetime.now().strftime("%d/%m/%Y, %H:%M:%S")
 
 def get_current_dir() -> Path:
     """Get the current directory of the module.
@@ -38,19 +39,18 @@ def get_current_dir() -> Path:
         return Path.cwd()
 
 # ===== CONFIGURATION =====
-
-summarization_model = init_chat_model(model="openai:gpt-5")
-writer_model = init_chat_model(model="openai:gpt-5", max_tokens=32000)
+summarization_model = get_light_model()
+writer_model = get_model(max_tokens=32000)  # Reduced from 32000 to 8000 for efficiency
 tavily_client = TavilyClient()
 MAX_CONTEXT_LENGTH = 250000
 
 # ===== SEARCH FUNCTIONS =====
 
 def tavily_search_multiple(
-    search_queries: List[str], 
-    max_results: int = 3, 
-    topic: Literal["general", "news", "finance"] = "general", 
-    include_raw_content: bool = True, 
+    search_queries: List[str],
+    max_results: int = 3,  # Reduced from 3 to 2 for efficiency
+    topic: Literal["general", "news", "finance"] = "general",
+    include_raw_content: bool = True,
 ) -> List[dict]:
     """Perform search using Tavily API for multiple queries.
 
@@ -65,6 +65,7 @@ def tavily_search_multiple(
     """
 
     # Execute searches sequentially. Note: yon can use AsyncTavilyClient to parallelize this step.
+    tracker = get_tracker()
     search_docs = []
     for query in search_queries:
         result = tavily_client.search(
@@ -74,6 +75,8 @@ def tavily_search_multiple(
             topic=topic
         )
         search_docs.append(result)
+        # Track Tavily API call
+        tracker.track_tavily_call()
 
     return search_docs
 
@@ -91,12 +94,17 @@ def summarize_webpage_content(webpage_content: str) -> str:
         structured_model = summarization_model.with_structured_output(Summary)
 
         # Generate summary
-        summary = structured_model.invoke([
+        response = structured_model.invoke([
             HumanMessage(content=summarize_webpage_prompt.format(
-                webpage_content=webpage_content, 
+                webpage_content=webpage_content,
                 date=get_today_str()
             ))
         ])
+
+        # Track token usage
+        tracker = get_tracker()
+        tracker.track_openai_response(response)
+        summary = response
 
         # Format summary with clear structure
         formatted_summary = (
@@ -182,7 +190,7 @@ def format_search_output(summarized_results: dict) -> str:
 @tool(parse_docstring=True)
 def tavily_search(
     query: str,
-    max_results: Annotated[int, InjectedToolArg] = 3,
+    max_results: Annotated[int, InjectedToolArg] = 3,  # Reduced from 3 to 2 for efficiency
     topic: Annotated[Literal["general", "news", "finance"], InjectedToolArg] = "general",
 ) -> str:
     """Fetch results from Tavily search API with content summarization.
@@ -240,8 +248,8 @@ def think_tool(reflection: str) -> str:
     return f"Reflection recorded: {reflection}"
 
 @tool(parse_docstring=True)
-def refine_draft_report(research_brief: Annotated[str, InjectedToolArg], 
-                        findings: Annotated[str, InjectedToolArg], 
+def refine_draft_report(research_brief: Annotated[str, InjectedToolArg],
+                        findings: Annotated[str, InjectedToolArg],
                         draft_report: Annotated[str, InjectedToolArg]):
     """Refine draft report
 
@@ -264,5 +272,9 @@ def refine_draft_report(research_brief: Annotated[str, InjectedToolArg],
     )
 
     draft_report = writer_model.invoke([HumanMessage(content=draft_report_prompt)])
+
+    # Track token usage
+    tracker = get_tracker()
+    tracker.track_openai_response(draft_report)
 
     return draft_report.content

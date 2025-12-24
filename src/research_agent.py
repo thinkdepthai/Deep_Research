@@ -9,11 +9,12 @@ from typing_extensions import Literal
 
 from langgraph.graph import StateGraph, START, END
 from langchain_core.messages import SystemMessage, HumanMessage, ToolMessage, filter_messages
-from langchain.chat_models import init_chat_model
+from deep_research.model_config import get_model, get_light_model
 
 from deep_research.state_research import ResearcherState, ResearcherOutputState
 from deep_research.utils import tavily_search, get_today_str, think_tool
 from deep_research.prompts import research_agent_prompt, compress_research_system_prompt, compress_research_human_message
+from deep_research.usage_tracker import get_tracker
 
 # ===== CONFIGURATION =====
 
@@ -22,10 +23,10 @@ tools = [tavily_search, think_tool]
 tools_by_name = {tool.name: tool for tool in tools}
 
 # Initialize models
-model = init_chat_model(model="openai:gpt-5")
+model = get_model()
 model_with_tools = model.bind_tools(tools)
-summarization_model = init_chat_model(model="openai:gpt-5")
-compress_model = init_chat_model(model="openai:gpt-5", max_tokens=32000) # model="anthropic:claude-sonnet-4-20250514", max_tokens=64000
+
+compress_model = get_light_model()
 
 # ===== AGENT NODES =====
 
@@ -38,12 +39,16 @@ def llm_call(state: ResearcherState):
 
     Returns updated state with the model's response.
     """
+    response = model_with_tools.invoke(
+        [SystemMessage(content=research_agent_prompt)] + state["researcher_messages"]
+    )
+
+    # Track token usage
+    tracker = get_tracker()
+    tracker.track_openai_response(response)
+
     return {
-        "researcher_messages": [
-            model_with_tools.invoke(
-                [SystemMessage(content=research_agent_prompt)] + state["researcher_messages"]
-            )
-        ]
+        "researcher_messages": [response]
     }
 
 def tool_node(state: ResearcherState):
@@ -79,13 +84,20 @@ def compress_research(state: ResearcherState) -> dict:
     """
 
     system_message = compress_research_system_prompt.format(date=get_today_str())
-    messages = [SystemMessage(content=system_message)] + state.get("researcher_messages", []) + [HumanMessage(content=compress_research_human_message)]
+    research_topic = state.get("research_topic", "the research topic")
+    human_message_content = compress_research_human_message.format(research_topic=research_topic)
+    messages = [SystemMessage(content=system_message)] + state.get("researcher_messages", [])
+    messages += [HumanMessage(content=human_message_content)]
     response = compress_model.invoke(messages)
+
+    # Track token usage
+    tracker = get_tracker()
+    tracker.track_openai_response(response)
 
     # Extract raw notes from tool and AI messages
     raw_notes = [
         str(m.content) for m in filter_messages(
-            state["researcher_messages"], 
+            state["researcher_messages"],
             include_types=["tool", "ai"]
         )
     ]
