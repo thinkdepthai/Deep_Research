@@ -12,13 +12,14 @@ whether sufficient context exists to proceed with research.
 from datetime import datetime
 from typing_extensions import Literal
 
-from langchain.chat_models import init_chat_model
 from langchain_core.messages import HumanMessage, get_buffer_string
 from langgraph.graph import StateGraph, START, END
 from langgraph.types import Command
 
+from deep_research.llm_factory import get_chat_model
 from deep_research.prompts import transform_messages_into_research_topic_human_msg_prompt, draft_report_generation_prompt, clarify_with_user_instructions
 from deep_research.state_scope import AgentState, ResearchQuestion, AgentInputState, DraftReport
+
 
 # ===== UTILITY FUNCTIONS =====
 
@@ -29,8 +30,8 @@ def get_today_str() -> str:
 # ===== CONFIGURATION =====
 
 # Initialize model
-model = init_chat_model(model="openai:gpt-5")
-creative_model = init_chat_model(model="openai:gpt-5")
+model = get_chat_model("scope_primary")
+creative_model = get_chat_model("scope_creative")
 
 # ===== WORKFLOW NODES =====
 

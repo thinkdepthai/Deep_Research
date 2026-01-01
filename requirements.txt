@@ -13,3 +13,4 @@ jupyter
 ipykernel
 tavily-python
 PyYAML
+langchain-core

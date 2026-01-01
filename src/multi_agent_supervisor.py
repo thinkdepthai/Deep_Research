@@ -14,7 +14,6 @@ import asyncio
 
 from typing_extensions import Literal
 
-from langchain.chat_models import init_chat_model
 from langchain_core.messages import (
     HumanMessage, 
     BaseMessage, 
@@ -25,6 +24,7 @@ from langchain_core.messages import (
 from langgraph.graph import StateGraph, START, END
 from langgraph.types import Command
 
+from deep_research.llm_factory import get_chat_model
 from deep_research.prompts import lead_researcher_with_multiple_steps_diffusion_double_check_prompt
 from deep_research.research_agent import researcher_agent
 from deep_research.state_multi_agent_supervisor import (
@@ -67,9 +67,11 @@ except ImportError:
 
 # ===== CONFIGURATION =====
 
-supervisor_tools = [ConductResearch, ResearchComplete, think_tool,refine_draft_report]
-supervisor_model = init_chat_model(model="openai:gpt-5")
+supervisor_tools = [ConductResearch, ResearchComplete, think_tool, refine_draft_report]
+supervisor_model = get_chat_model("supervisor")
 supervisor_model_with_tools = supervisor_model.bind_tools(supervisor_tools)
+
+
 
 # System constants
 # Maximum number of tool call iterations for individual researcher agents

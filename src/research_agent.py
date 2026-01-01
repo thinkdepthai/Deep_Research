@@ -9,8 +9,7 @@ from typing_extensions import Literal
 
 from langgraph.graph import StateGraph, START, END
 from langchain_core.messages import SystemMessage, HumanMessage, ToolMessage, filter_messages
-from langchain.chat_models import init_chat_model
-
+from deep_research.llm_factory import get_chat_model
 from deep_research.state_research import ResearcherState, ResearcherOutputState
 from deep_research.utils import tavily_search, get_today_str, think_tool
 from deep_research.prompts import research_agent_prompt, compress_research_system_prompt, compress_research_human_message
@@ -22,10 +21,10 @@ tools = [tavily_search, think_tool]
 tools_by_name = {tool.name: tool for tool in tools}
 
 # Initialize models
-model = init_chat_model(model="openai:gpt-5")
+model = get_chat_model("researcher_main")
 model_with_tools = model.bind_tools(tools)
-summarization_model = init_chat_model(model="openai:gpt-5")
-compress_model = init_chat_model(model="openai:gpt-5", max_tokens=32000) # model="anthropic:claude-sonnet-4-20250514", max_tokens=64000
+summarization_model = get_chat_model("researcher_summarizer")
+compress_model = get_chat_model("researcher_compressor", max_tokens=32000) # model="anthropic:claude-sonnet-4-20250514", max_tokens=64000
 
 # ===== AGENT NODES =====
 
