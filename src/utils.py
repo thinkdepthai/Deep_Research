@@ -179,7 +179,6 @@ def format_search_output(summarized_results: dict) -> str:
 
 # ===== RESEARCH TOOLS =====
 
-@tool(parse_docstring=True)
 def tavily_search(
     query: str,
     max_results: Annotated[int, InjectedToolArg] = 3,
@@ -212,7 +211,9 @@ def tavily_search(
     # Format output for consumption
     return format_search_output(summarized_results)
 
-@tool(parse_docstring=True)
+# Tool version for LangChain integrations
+_tavily_search_tool = tool(parse_docstring=True)(tavily_search)
+
 def think_tool(reflection: str) -> str:
     """Tool for strategic reflection on research progress and decision-making.
 
@@ -239,7 +240,6 @@ def think_tool(reflection: str) -> str:
     """
     return f"Reflection recorded: {reflection}"
 
-@tool(parse_docstring=True)
 def refine_draft_report(research_brief: Annotated[str, InjectedToolArg], 
                         findings: Annotated[str, InjectedToolArg], 
                         draft_report: Annotated[str, InjectedToolArg]):
@@ -266,3 +266,6 @@ def refine_draft_report(research_brief: Annotated[str, InjectedToolArg],
     draft_report = writer_model.invoke([HumanMessage(content=draft_report_prompt)])
 
     return draft_report.content
+
+# Tool version for LangChain integrations
+_refine_draft_report_tool = tool(parse_docstring=True)(refine_draft_report)

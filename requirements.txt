@@ -1,0 +1,15 @@
+langgraph
+langchain
+langchain-openai
+langchain-azure-ai
+langchain-anthropic
+langchain_community
+langchain_tavily
+langchain_mcp_adapters
+typing_extensions
+pydantic
+rich
+jupyter
+ipykernel
+tavily-python
+PyYAML

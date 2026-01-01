@@ -1,0 +1,8 @@
+.venv/*
+.coverage
+*.pyc
+__pycache__/
+.env
+.env.*
+reports/*
+config.yml
