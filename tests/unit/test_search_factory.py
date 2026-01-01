@@ -100,7 +100,7 @@ def test_get_search_client_unsupported_backend(monkeypatch):
 
 
 def test_get_search_client_missing_block(monkeypatch):
-    cfg = {"api": {}}
+    cfg = {}
 
     def fake_load_config(stage_name):
         return cfg

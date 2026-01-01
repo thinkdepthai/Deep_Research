@@ -14,7 +14,7 @@ from deep_research import llm_factory
 
 def test_get_chat_model_openai_builds_kwargs(monkeypatch):
     config = {
-        "api": {
+        "cognition": {
             "openai": {
                 "api_key": "KEY",
                 "base_url": "https://api.openai.com/v1",
@@ -55,7 +55,7 @@ def test_get_chat_model_openai_builds_kwargs(monkeypatch):
 
 def test_get_chat_model_azure_uses_deployment_map(monkeypatch):
     config = {
-        "api": {
+        "cognition": {
             "azure": {
                 "api_key": "AZKEY",
                 "azure_endpoint": "https://azure.openai.endpoint",
@@ -94,7 +94,7 @@ def test_get_chat_model_azure_uses_deployment_map(monkeypatch):
 
 def test_get_chat_model_missing_role_raises(monkeypatch):
     def fake_load_config(stage_name=None):
-        return {"api": {}, "roles": {}}
+        return {"cognition": {}, "roles": {}}
 
     monkeypatch.setattr(llm_factory, "load_config", fake_load_config)
 

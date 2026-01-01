@@ -1,7 +1,7 @@
 ---
 stages:
   unit_test:
-    api:
+    cognition:
       openai:
         api_key: ${OPENAI_API_KEY}
         base_url: https://api.openai.com/v1

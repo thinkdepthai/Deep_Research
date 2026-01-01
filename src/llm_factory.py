@@ -120,9 +120,9 @@ def get_chat_model(role: str, *, stage: str | None = None, max_tokens: int | Non
     if not backend or not handle:
         raise LLMConfigError(f"Role '{role}' is missing backend or handle")
 
-    api_cfg = cfg.get("api", {}).get(backend)
+    api_cfg = cfg.get("cognition", {}).get(backend)
     if api_cfg is None:
-        raise LLMConfigError(f"No api config for backend '{backend}'")
+        raise LLMConfigError(f"No cognition config for backend '{backend}'")
 
     kwargs = _build_kwargs(backend=backend, handle=handle, api_cfg=api_cfg, max_tokens=max_tokens)
     return init_chat_model(**kwargs)
