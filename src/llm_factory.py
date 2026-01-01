@@ -78,16 +78,18 @@ def _build_azure_kwargs(handle: str, api_cfg: Dict[str, Any], max_tokens: int | 
 
     kwargs: Dict[str, Any] = {
         "model": deployment,
-        "azure_endpoint": azure_endpoint,
     }
 
+    model_kwargs: Dict[str, Any] = {"azure_endpoint": azure_endpoint}
+
     if api_cfg.get("api_version"):
-        kwargs["api_version"] = api_cfg["api_version"]
+        model_kwargs["api_version"] = api_cfg["api_version"]
     if api_cfg.get("api_key"):
         kwargs["api_key"] = api_cfg["api_key"]
     if max_tokens is not None:
         kwargs["max_tokens"] = max_tokens
 
+    kwargs["model_kwargs"] = model_kwargs
     return kwargs
 
 

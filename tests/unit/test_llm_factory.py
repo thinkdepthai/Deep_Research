@@ -85,10 +85,12 @@ def test_get_chat_model_azure_uses_deployment_map(monkeypatch):
     assert model == "AZMODEL"
     assert captured["kwargs"] == {
         "model": "deploy-mini",
-        "azure_endpoint": "https://azure.openai.endpoint",
-        "api_version": "2024-05-01-preview",
         "api_key": "AZKEY",
         "max_tokens": 999,
+        "model_kwargs": {
+            "azure_endpoint": "https://azure.openai.endpoint",
+            "api_version": "2024-05-01-preview",
+        },
     }
 
 

@@ -11,13 +11,13 @@ from langgraph.graph import StateGraph, START, END
 from langchain_core.messages import SystemMessage, HumanMessage, ToolMessage, filter_messages
 from deep_research.llm_factory import get_chat_model
 from deep_research.state_research import ResearcherState, ResearcherOutputState
-from deep_research.utils import tavily_search, get_today_str, think_tool
+from deep_research.utils import _tavily_search_tool, _think_tool, get_today_str
 from deep_research.prompts import research_agent_prompt, compress_research_system_prompt, compress_research_human_message
 
 # ===== CONFIGURATION =====
 
 # Set up tools and model binding
-tools = [tavily_search, think_tool]
+tools = [_tavily_search_tool, _think_tool]
 tools_by_name = {tool.name: tool for tool in tools}
 
 # Initialize models

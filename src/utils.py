@@ -228,7 +228,7 @@ def think_tool(reflection: str) -> str:
     When to use:
     - After receiving search results: What key information did I find?
     - Before deciding next steps: Do I have enough to answer comprehensively?
-    - When assessing research gaps: What specific information am I still missing?
+    - When assessing research gaps: What crucial information is still missing?
     - Before concluding research: Can I provide a complete answer now?
 
     Reflection should address:
@@ -245,9 +245,13 @@ def think_tool(reflection: str) -> str:
     """
     return f"Reflection recorded: {reflection}"
 
+# Tool version for LangChain integrations
+_think_tool = tool(parse_docstring=True)(think_tool)
+
 def refine_draft_report(research_brief: Annotated[str, InjectedToolArg], 
                         findings: Annotated[str, InjectedToolArg], 
                         draft_report: Annotated[str, InjectedToolArg]):
+
     """Refine draft report
 
     Synthesizes all research findings into a comprehensive draft report

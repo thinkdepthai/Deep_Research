@@ -32,7 +32,7 @@ from deep_research.state_multi_agent_supervisor import (
     ConductResearch,
     ResearchComplete
 )
-from deep_research.utils import get_today_str, think_tool, refine_draft_report
+from deep_research.utils import get_today_str, _think_tool, _refine_draft_report_tool
 
 def get_notes_from_tool_calls(messages: list[BaseMessage]) -> list[str]:
     """Extract research notes from ToolMessage objects in supervisor message history.
@@ -67,7 +67,7 @@ except ImportError:
 
 # ===== CONFIGURATION =====
 
-supervisor_tools = [ConductResearch, ResearchComplete, think_tool, refine_draft_report]
+supervisor_tools = [ConductResearch, ResearchComplete, _think_tool, _refine_draft_report_tool]
 supervisor_model = get_chat_model("supervisor")
 supervisor_model_with_tools = supervisor_model.bind_tools(supervisor_tools)
 
@@ -179,7 +179,7 @@ async def supervisor_tools(state: SupervisorState) -> Command[Literal["superviso
 
             # Handle think_tool calls (synchronous)
             for tool_call in think_tool_calls:
-                observation = think_tool.invoke(tool_call["args"])
+                observation = _think_tool.invoke(tool_call["args"])
                 tool_messages.append(
                     ToolMessage(
                         content=observation,
