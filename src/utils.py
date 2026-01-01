@@ -8,15 +8,20 @@ including web search capabilities and content summarization tools.
 
 from pathlib import Path
 from datetime import datetime
+from typing import Optional
 from typing_extensions import Annotated, List, Literal
 
 from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool, InjectedToolArg
-from tavily import TavilyClient
 
 from deep_research.llm_factory import get_chat_model
 from deep_research.state_research import Summary
 from deep_research.prompts import summarize_webpage_prompt, report_generation_with_draft_insight_prompt
+from deep_research.search_factory import get_search_client, get_search_defaults
+
+
+
+
 
 # ===== UTILITY FUNCTIONS =====
 
@@ -41,41 +46,37 @@ def get_current_dir() -> Path:
 
 summarization_model = get_chat_model("researcher_summarizer")
 writer_model = get_chat_model("writer", max_tokens=32000)
-tavily_client = TavilyClient()
+search_client = get_search_client()
+search_defaults = get_search_defaults()
 MAX_CONTEXT_LENGTH = 250000
 
 # ===== SEARCH FUNCTIONS =====
 
 def tavily_search_multiple(
-    search_queries: List[str], 
-    max_results: int = 3, 
-    topic: Literal["general", "news", "finance"] = "general", 
-    include_raw_content: bool = True, 
+    search_queries: List[str],
+    max_results: int = 3,
+    topic: Literal["general", "news", "finance"] = "general",
+    include_raw_content: bool = True,
+    client=None,
 ) -> List[dict]:
-    """Perform search using Tavily API for multiple queries.
+    """Perform search using configured search client for multiple queries."""
 
-    Args:
-        search_queries: List of search queries to execute
-        max_results: Maximum number of results per query
-        topic: Topic filter for search results
-        include_raw_content: Whether to include raw webpage content
+    client = client or search_client
 
-    Returns:
-        List of search result dictionaries
-    """
-
-    # Execute searches sequentially. Note: yon can use AsyncTavilyClient to parallelize this step.
+    # Execute searches sequentially. Note: you can use an async client to parallelize this step.
     search_docs = []
     for query in search_queries:
-        result = tavily_client.search(
+        result = client.search(
             query,
             max_results=max_results,
             include_raw_content=include_raw_content,
-            topic=topic
+            topic=topic,
         )
         search_docs.append(result)
 
     return search_docs
+
+
 
 def summarize_webpage_content(webpage_content: str) -> str:
     """Summarize webpage content using the configured summarization model.
@@ -181,25 +182,29 @@ def format_search_output(summarized_results: dict) -> str:
 
 def tavily_search(
     query: str,
-    max_results: Annotated[int, InjectedToolArg] = 3,
-    topic: Annotated[Literal["general", "news", "finance"], InjectedToolArg] = "general",
+    max_results: Annotated[Optional[int], InjectedToolArg] = None,
+    topic: Annotated[Optional[Literal["general", "news", "finance"]], InjectedToolArg] = None,
 ) -> str:
-    """Fetch results from Tavily search API with content summarization.
+    """Fetch results from the configured search API and summarize content.
 
     Args:
-        query: A single search query to execute
-        max_results: Maximum number of results to return
-        topic: Topic to filter results by ('general', 'news', 'finance')
+        query: Search query string.
+        max_results: Optional limit for number of results; falls back to config default.
+        topic: Optional topic (general, news, finance); falls back to config default.
 
     Returns:
-        Formatted string of search results with summaries
+        A formatted string containing deduplicated and summarized search results.
     """
+    resolved_max_results = max_results if max_results is not None else search_defaults.get("max_results", 3)
+    resolved_topic = topic if topic is not None else search_defaults.get("topic", "general")
+    include_raw_content = search_defaults.get("include_raw_content", True)
+
     # Execute search for single query
     search_results = tavily_search_multiple(
         [query],  # Convert single query to list for the internal function
-        max_results=max_results,
-        topic=topic,
-        include_raw_content=True,
+        max_results=resolved_max_results,
+        topic=resolved_topic,
+        include_raw_content=include_raw_content,
     )
 
     # Deduplicate results by URL to avoid processing duplicate content
@@ -263,9 +268,10 @@ def refine_draft_report(research_brief: Annotated[str, InjectedToolArg],
         date=get_today_str()
     )
 
-    draft_report = writer_model.invoke([HumanMessage(content=draft_report_prompt)])
+    draft_report_obj = writer_model.invoke([HumanMessage(content=draft_report_prompt)])
 
-    return draft_report.content
+    # Some clients may return a str, others a message-like object with `.content`
+    return getattr(draft_report_obj, "content", draft_report_obj)
 
 # Tool version for LangChain integrations
 _refine_draft_report_tool = tool(parse_docstring=True)(refine_draft_report)

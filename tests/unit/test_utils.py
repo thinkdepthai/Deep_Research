@@ -107,7 +107,7 @@ def test_tavily_search_multiple_calls_client(monkeypatch):
         calls.append((query, max_results, include_raw_content, topic))
         return {"results": [{"url": f"{query}-url", "title": "t", "content": "c"}]}
 
-    monkeypatch.setattr(utils, "tavily_client", SimpleNamespace(search=fake_search))
+    monkeypatch.setattr(utils, "search_client", SimpleNamespace(search=fake_search))
 
     results = utils.tavily_search_multiple(
         ["q1", "q2"], max_results=2, topic="news", include_raw_content=False
