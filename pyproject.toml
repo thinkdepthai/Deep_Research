@@ -42,12 +42,13 @@ py-modules = []
 include-package-data = false
 
 [tool.setuptools.packages.find]
-where = ["src"]
-include = ["deep_research*"]
+where = ["src", "."]
+include = ["deep_research*", "modules*", "modules.*"]
 exclude = ["*.egg-info"]
 
 [tool.setuptools.package-dir]
 "" = "src"
+modules = "modules"
 
 [tool.setuptools.package-data]
 deep_research = ["py.typed"]
