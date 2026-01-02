@@ -28,17 +28,9 @@ class CustomSearchProvider(SearchProvider):
         topic: str,
         timeout_seconds: int | None,
     ) -> Dict[str, Any]:
-        # Simulated result payload matching downstream expectations.
-        return {
-            "results": [
-                {
-                    "url": f"https://example.com/{query}",
-                    "title": f"Result for {query}",
-                    "content": f"Stub content for '{query}' (topic={topic})",
-                    # include_raw_content omitted in stub
-                }
-            ][:max_results]
-        }
+        raise NotImplementedError(
+            "Custom search backend not implemented yet. Provide a real implementation or override provider."
+        )
 
     def defaults(self, provider_cfg: Dict[str, Any]) -> Dict[str, Any]:
         base = {

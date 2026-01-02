@@ -1,6 +1,6 @@
 [project]
 name = "thinkdepthai_deep_research"
-version = "0.1.2"
+version = "0.1.3"
 description = "ThinkDepth.ai Deep Research"
 readme = "README.md"
 requires-python = ">=3.11"

@@ -10,3 +10,4 @@ config.yml
 dist
 build/
 *.egg-info/
+AGENTS.md
