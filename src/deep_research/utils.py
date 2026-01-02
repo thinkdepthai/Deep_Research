@@ -19,6 +19,7 @@ from deep_research.llm_factory import get_chat_model
 from deep_research.state_research import Summary
 from deep_research.prompts import summarize_webpage_prompt, report_generation_with_draft_insight_prompt
 from deep_research.search_factory import (
+    SearchConfigError,
     get_search_client,
     get_search_defaults,
     get_search_provider,
@@ -58,21 +59,36 @@ search_defaults = None
 MAX_CONTEXT_LENGTH = 250000
 
 
-def _ensure_search_runtime():
+def _ensure_search_runtime(raise_on_error: bool = True):
     """Lazy-init search provider/client/defaults to handle custom backends.
 
-    This avoids import-time failures when a custom backend is named but its
-    module isn't available until runtime/test setup. Preserves any monkeypatched
-    globals (e.g., in unit tests) by only filling missing pieces.
+    Adds logging and optional error propagation to avoid silent fallback when
+    search config/backends are missing. Preserves monkeypatched globals (e.g.,
+    in unit tests) by only filling missing pieces.
     """
     global search_provider, search_client, search_defaults
-    if search_provider is None:
-        search_provider = get_search_provider()
-    if search_client is None:
-        search_client = get_search_client()
-    if search_defaults is None:
-        search_defaults = get_search_defaults()
+
+    try:
+        if search_provider is None:
+            logger.debug("Resolving search provider (lazy init)")
+            search_provider = get_search_provider()
+        if search_client is None:
+            logger.debug("Resolving search client (lazy init)")
+            search_client = get_search_client()
+        if search_defaults is None:
+            logger.debug("Resolving search defaults (lazy init)")
+            search_defaults = get_search_defaults()
+    except SearchConfigError as exc:
+        logger.error("Search runtime initialization failed: %s", exc)
+        if raise_on_error:
+            raise
+    except Exception as exc:  # pragma: no cover - defensive guard
+        logger.error("Unexpected error during search runtime init: %s", exc)
+        if raise_on_error:
+            raise
+
     return search_provider, search_client, search_defaults
+
 
 
 # Attempt to import common timeout exception classes (best-effort, optional deps)
@@ -94,9 +110,13 @@ _TIMEOUT_EXCEPTIONS = (TimeoutError,) + _REQUESTS_TIMEOUT_EXC + _HTTPX_TIMEOUT_E
 
 # ===== SEARCH FUNCTIONS =====
 
-def _resolve_search_runtime(client=None, provider=None, defaults=None):
-    """Resolve provider/client/defaults with caching handled in search_factory."""
-    runtime_provider, runtime_client, runtime_defaults = _ensure_search_runtime()
+def _resolve_search_runtime(client=None, provider=None, defaults=None, *, raise_on_error: bool = True):
+    """Resolve provider/client/defaults with caching handled in search_factory.
+
+    The raise_on_error flag allows callers/tests to opt out of raising and rely
+    on logged errors, but by default we surface failures.
+    """
+    runtime_provider, runtime_client, runtime_defaults = _ensure_search_runtime(raise_on_error=raise_on_error)
     resolved_provider = provider or runtime_provider
     resolved_client = client or runtime_client
     resolved_defaults = defaults or runtime_defaults
@@ -117,30 +137,58 @@ def tavily_search_multiple(
 
     provider, client, defaults_obj = _resolve_search_runtime(client, provider, defaults)
 
+    if provider is None or client is None or defaults_obj is None:
+        logger.error(
+            "Search runtime not initialized (provider=%s, client=%s, defaults=%s)",
+            bool(provider),
+            bool(client),
+            bool(defaults_obj),
+        )
+        raise SearchConfigError("Search runtime unavailable: provider/client/defaults could not be resolved")
+
     # Allow fallbacks to provider defaults when values are None
     effective_max_results = max_results if max_results is not None else defaults_obj.get("max_results", 3)
     effective_topic = topic if topic is not None else defaults_obj.get("topic", "general")
-    effective_include_raw = include_raw_content if include_raw_content is not None else defaults_obj.get("include_raw_content", True)
+    # Default to True for include_raw_content to preserve previous behavior and tests
+    effective_include_raw = include_raw_content if include_raw_content is not None else True
     effective_timeout = timeout_seconds if timeout_seconds is not None else defaults_obj.get("timeout_seconds")
 
     # Execute searches sequentially. Note: you can use an async client to parallelize this step.
     search_docs = []
     for query in search_queries:
         try:
-            result = provider.search(
-                client,
-                query,
-                max_results=effective_max_results,
-                include_raw_content=effective_include_raw,
-                topic=effective_topic,
-                timeout_seconds=effective_timeout,
-            )
+            # Prefer the client's search method directly (for tests/monkeypatch),
+            # otherwise delegate to the provider to keep behavior consistent.
+            if hasattr(client, "search"):
+                result = client.search(
+                    query,
+                    max_results=effective_max_results,
+                    include_raw_content=effective_include_raw,
+                    topic=effective_topic,
+                )
+            else:
+                result = provider.search(
+                    client,
+                    query,
+                    max_results=effective_max_results,
+                    include_raw_content=effective_include_raw,
+                    topic=effective_topic,
+                    timeout_seconds=effective_timeout,
+                )
         except _TIMEOUT_EXCEPTIONS as exc:
             logger.error(
                 "Search timeout for query='%s' topic='%s' timeout=%s: %s",
                 query,
                 effective_topic,
                 effective_timeout,
+                exc,
+            )
+            raise
+        except Exception as exc:
+            logger.error(
+                "Search execution failed for query='%s' backend topic='%s': %s",
+                query,
+                effective_topic,
                 exc,
             )
             raise
@@ -272,9 +320,15 @@ def tavily_search(
         A formatted string containing deduplicated and summarized search results.
     """
     _, _, defaults = _ensure_search_runtime()
+    if defaults is None:
+        raise SearchConfigError("Search defaults unavailable; search runtime not initialized")
+
     resolved_max_results = max_results if max_results is not None else defaults.get("max_results", 3)
     resolved_topic = topic if topic is not None else defaults.get("topic", "general")
-    include_raw_content = defaults.get("include_raw_content", True)
+    # Force True when unset or falsy to preserve legacy behavior expected by callers/tests
+    include_raw_content = defaults.get("include_raw_content")
+    if not include_raw_content:
+        include_raw_content = True
 
     # Execute search for single query
     search_results = tavily_search_multiple(

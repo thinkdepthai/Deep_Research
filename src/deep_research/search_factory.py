@@ -10,9 +10,11 @@ from typing import Any, Dict, Protocol
 
 from tavily import TavilyClient
 
+from deep_research import logging as dr_logging
 from deep_research.modules.util.confighelpers import load_config
 
 DEFAULT_STAGE = "unit_test"
+logger = dr_logging.get_logger(__name__)
 
 
 class SearchConfigError(ValueError):
@@ -155,7 +157,10 @@ register_provider("tavily", TavilyProvider())
 
 
 def _maybe_import_provider(backend: str) -> None:
-    """Best-effort dynamic import to resolve a provider by convention."""
+    """Best-effort dynamic import to resolve a provider by convention.
+
+    Emits debug logs for tracing how providers are resolved/imported.
+    """
     module_candidates = [
         f"deep_research.providers.{backend}",
         f"deep_research_search_{backend}",
@@ -165,21 +170,28 @@ def _maybe_import_provider(backend: str) -> None:
     for mod_name in module_candidates:
         try:
             module = importlib.import_module(mod_name)
-        except Exception:
+            logger.debug("Imported module '%s' for backend '%s'", mod_name, backend)
+        except Exception as exc:  # pragma: no cover - import guards
+            logger.debug("Module import failed for '%s' (backend='%s'): %s", mod_name, backend, exc)
             continue
 
         # Allow module to self-register via a PROVIDER attribute
         provider_obj = getattr(module, "PROVIDER", None)
         if provider_obj is not None:
+            logger.debug("Registering provider via PROVIDER attribute for backend '%s'", backend)
             register_provider(backend, provider_obj)
 
         # Or provide an explicit registration hook
         register_fn = getattr(module, "register_search_provider", None) or getattr(module, "register_provider", None)
         if callable(register_fn):
+            logger.debug("Invoking registration hook in module '%s' for backend '%s'", mod_name, backend)
             register_fn(register_provider)
 
         if backend.lower() in _PROVIDER_REGISTRY:
+            logger.debug("Provider resolved for backend '%s' after importing '%s'", backend, mod_name)
             return
+
+    logger.warning("No provider registered after attempting imports for backend '%s'", backend)
 
 
 def _get_provider(search_cfg: Dict[str, Any]) -> tuple[str, SearchProvider]:
@@ -187,17 +199,23 @@ def _get_provider(search_cfg: Dict[str, Any]) -> tuple[str, SearchProvider]:
 
     cache_key = (os.environ.get("CONFIG_PATH", "config.yml"), backend)
     if cache_key in _PROVIDER_CACHE:
+        logger.debug("Using cached search provider for backend='%s'", backend)
         return backend, _PROVIDER_CACHE[cache_key]
 
     provider = _PROVIDER_REGISTRY.get(backend)
     if provider is None:
+        logger.info("No registered provider for backend='%s'; attempting dynamic import", backend)
         _maybe_import_provider(backend)
         provider = _PROVIDER_REGISTRY.get(backend)
 
     if provider is None:
-        raise SearchConfigError(f"Unsupported search backend '{backend}'")
+        raise SearchConfigError(
+            f"Unsupported search backend '{backend}'. "
+            "Ensure the provider module is installed/importable or register a provider via override_provider/register_provider."
+        )
 
     _PROVIDER_CACHE[cache_key] = provider
+    logger.debug("Search provider resolved and cached for backend='%s'", backend)
     return backend, provider
 
 
@@ -205,6 +223,7 @@ def get_search_client(*, stage: str | None = None):
     """Return a search client for the configured backend.
 
     Clients are cached per (CONFIG_PATH, stage, backend).
+    Raises SearchConfigError if backend is missing or misconfigured.
     """
     stage_name = _resolve_stage(stage)
     search_cfg = _get_search_cfg(stage_name)
@@ -212,10 +231,21 @@ def get_search_client(*, stage: str | None = None):
 
     cache_key = (os.environ.get("CONFIG_PATH", "config.yml"), stage_name, backend)
     if cache_key in _SEARCH_CLIENT_CACHE:
+        logger.debug("Using cached search client for backend='%s' stage='%s'", backend, stage_name)
         return _SEARCH_CLIENT_CACHE[cache_key]
 
     backend_cfg = search_cfg.get(backend, {}) if isinstance(search_cfg, dict) else {}
-    client = provider.build_client(backend_cfg)
+    if not isinstance(backend_cfg, dict):
+        raise SearchConfigError(
+            f"Search config for backend '{backend}' must be a mapping, got {type(backend_cfg).__name__}"
+        )
+
+    logger.info("Building search client for backend='%s' stage='%s'", backend, stage_name)
+    try:
+        client = provider.build_client(backend_cfg)
+    except Exception as exc:
+        logger.error("Failed to build search client for backend='%s': %s", backend, exc)
+        raise
 
     _SEARCH_CLIENT_CACHE[cache_key] = client
     return client
@@ -233,6 +263,10 @@ def get_search_defaults(*, stage: str | None = None) -> Dict[str, Any]:
     search_cfg = _get_search_cfg(stage)
     backend, provider = _get_provider(search_cfg)
     backend_cfg = search_cfg.get(backend, {}) if isinstance(search_cfg, dict) else {}
+    if not isinstance(backend_cfg, dict):
+        raise SearchConfigError(
+            f"Search config for backend '{backend}' must be a mapping, got {type(backend_cfg).__name__}"
+        )
     return provider.defaults(backend_cfg)
 
 

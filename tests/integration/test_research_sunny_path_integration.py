@@ -29,6 +29,7 @@ from langgraph.checkpoint.memory import InMemorySaver
 from deep_research.modules.util.confighelpers import load_config  # noqa: E402
 from deep_research.research_agent_full import deep_researcher_builder  # noqa: E402
 
+ROOT = Path(__file__).parent.parent.parent.parent
 
 def _slugify_topic(text: str, max_length: int = 48) -> str:
     slug = re.sub(r"[^a-zA-Z0-9]+", "-", text.lower()).strip("-")
