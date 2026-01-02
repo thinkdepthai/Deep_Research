@@ -32,7 +32,7 @@ def pytest_report_header(config):
         f"STAGE={stage}",
     ]
     try:
-        from modules.util.confighelpers import load_config
+        from deep_research.modules.util.confighelpers import load_config
 
         cfg = load_config(stage_name=stage)
         roles = sorted((cfg or {}).get("roles", {}).keys())

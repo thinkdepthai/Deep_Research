@@ -14,7 +14,7 @@ from pathlib import Path
 import pytest
 from langchain_core.messages import BaseMessage, HumanMessage
 from langchain_openai import ChatOpenAI
-from modules.util.confighelpers import load_config
+from deep_research.modules.util.confighelpers import load_config
 from pydantic import SecretStr
 
 

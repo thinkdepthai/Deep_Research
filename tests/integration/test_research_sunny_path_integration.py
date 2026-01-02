@@ -26,13 +26,7 @@ import pytest
 from langchain_core.messages import HumanMessage
 from langgraph.checkpoint.memory import InMemorySaver
 
-# Make local package importable without installation
-ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / "src"
-if str(SRC) not in sys.path:
-    sys.path.insert(0, str(SRC))
-
-from modules.util.confighelpers import load_config  # noqa: E402
+from deep_research.modules.util.confighelpers import load_config  # noqa: E402
 from deep_research.research_agent_full import deep_researcher_builder  # noqa: E402
 
 

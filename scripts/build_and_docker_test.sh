@@ -102,11 +102,12 @@ export PYTHONPATH="${PYTHONPATH_PREPEND}:${PYTHONPATH:-}"
 pytest ${PYTEST_TARGET:-tests/unit}
 
 if [[ "${RUN_SMOKE:-1}" == "1" ]]; then
-  python - <<"PY"
-from deep_research import __version__
-print("Smoke: deep_research imported successfully; version=", __version__)
+  python - <<'PY'
+from importlib.metadata import version
+print("Smoke: dist version =", version("thinkdepthai-deep-research"))
 PY
 fi
+
 '
 
 

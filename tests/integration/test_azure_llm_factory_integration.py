@@ -15,14 +15,9 @@ from pathlib import Path
 
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 
-# Ensure local src/ is importable
-ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / "src"
-if str(SRC) not in sys.path:
-    sys.path.insert(0, str(SRC))
 
-from modules.util.confighelpers import load_config  # noqa: E402
-from modules.util.HTTPDebugger import HTTPDebugger  # noqa: E402
+from deep_research.modules.util.confighelpers import load_config  # noqa: E402
+from deep_research.modules.util.HTTPDebugger import HTTPDebugger  # noqa: E402
 from deep_research.llm_factory import get_chat_model  # noqa: E402
 
 

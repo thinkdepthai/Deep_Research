@@ -1,7 +1,8 @@
 [project]
 name = "thinkdepthai_deep_research"
-version = "0.1.1"
+version = "0.1.2"
 description = "ThinkDepth.ai Deep Research"
+readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "langgraph>=1.0.5",
@@ -16,12 +17,9 @@ dependencies = [
     "typing_extensions>=4.15.0",
     "pydantic>=2.12.5",
     "rich>=14.2.0",
-    "jupyter>=1.1.1",
-    "ipykernel>=7.1.0",
-    "tavily-python>=0.7.17",
     "PyYAML>=6.0.3",
+    "tavily-python>=0.7.17",
 ]
-
 
 [project.optional-dependencies]
 dev = [
@@ -33,41 +31,28 @@ dev = [
     "build>=1.2.2",
 ]
 
+# Optional: keep notebooks out of the runtime dependency set.
+# If you want them installable on demand:
+notebook = [
+    "jupyter>=1.1.1",
+    "ipykernel>=7.1.0",
+]
+
 [build-system]
 requires = ["setuptools>=73.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-py-modules = []
+package-dir = { "" = "src" }
 include-package-data = false
 
 [tool.setuptools.packages.find]
-where = ["src", "."]
-include = ["deep_research*", "modules*", "modules.*"]
-exclude = ["*.egg-info"]
-
-[tool.setuptools.package-dir]
-"" = "src"
-modules = "modules"
+where = ["src"]
+include = ["deep_research*"]
+exclude = ["tests*"]
 
 [tool.setuptools.package-data]
 deep_research = ["py.typed"]
-
-[tool.setuptools.exclude-package-data]
-"*" = [
-    "llm_factory.py",
-    "logging.py",
-    "multi_agent_supervisor.py",
-    "prompts.py",
-    "research_agent.py",
-    "research_agent_full.py",
-    "research_agent_scope.py",
-    "search_factory.py",
-    "state_multi_agent_supervisor.py",
-    "state_research.py",
-    "state_scope.py",
-    "utils.py",
-]
 
 [tool.ruff]
 lint.select = [

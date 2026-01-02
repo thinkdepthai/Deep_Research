@@ -10,7 +10,7 @@ from typing import Any, Dict, Protocol
 
 from tavily import TavilyClient
 
-from modules.util.confighelpers import load_config
+from deep_research.modules.util.confighelpers import load_config
 
 DEFAULT_STAGE = "unit_test"
 

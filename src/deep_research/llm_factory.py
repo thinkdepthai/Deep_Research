@@ -11,7 +11,7 @@ from typing import Any, Dict, Optional
 
 from langchain.chat_models import init_chat_model
 
-from modules.util.confighelpers import load_config
+from deep_research.modules.util.confighelpers import load_config
 from deep_research import logging as dr_logging
 
 logger = dr_logging.get_logger(__name__)
