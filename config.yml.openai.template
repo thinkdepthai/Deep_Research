@@ -1,7 +1,7 @@
 ---
 
 stages:
-  prod:
+  unit_test:
     cognition:
       openai:
         base_url: https://api.openai.com/v1

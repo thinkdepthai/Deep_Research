@@ -132,14 +132,28 @@ def get_chat_model(role: str, *, stage: str | None = None, max_tokens: int | Non
         stage: override stage name; defaults to STAGE env or "unit_test"
         max_tokens: optional override passed to init_chat_model
     """
+    config_path = os.environ.get("CONFIG_PATH", "config.yml")
+    resolved_stage = _resolve_stage(stage)
+
     cfg = _load_stage_config(stage)
 
     roles_cfg = cfg.get("roles", {})
     if role not in roles_cfg:
+        # If a prior test cached a different load_config result, clear and retry once
+        _CONFIG_CACHE.clear()
+        cfg = _load_stage_config(stage)
+        roles_cfg = cfg.get("roles", {})
+
+    if role not in roles_cfg:
         available = ", ".join(sorted(roles_cfg.keys())) or "<none>"
-        raise LLMConfigError(f"Role '{role}' not found. Available: {available}")
+        raise LLMConfigError(
+            f"Role '{role}' not found for stage '{resolved_stage}' using config '{config_path}'. Available: {available}"
+        )
 
     role_cfg = roles_cfg[role]
+
+
+
     backend = role_cfg.get("backend")
     handle = role_cfg.get("handle")
     if not backend or not handle:

@@ -28,3 +28,26 @@ if spec and spec.loader:
     module.__path__ = [str(SRC)]
     sys.modules["deep_research"] = module
     spec.loader.exec_module(module)
+
+
+def pytest_report_header(config):
+    config_path = os.environ.get("CONFIG_PATH", "config.yml")
+    stage = os.environ.get("STAGE", "unit_test")
+    header = [
+        f"CONFIG_PATH={config_path}",
+        f"STAGE={stage}",
+    ]
+    try:
+        from modules.util.confighelpers import load_config
+
+        cfg = load_config(stage_name=stage)
+        roles = sorted((cfg or {}).get("roles", {}).keys())
+        header.append(
+            "roles({count}): {roles}".format(
+                count=len(roles), roles=", ".join(roles) if roles else "<none>"
+            )
+        )
+    except Exception as e:  # pragma: no cover - diagnostics only
+        header.append(f"config_load_error: {type(e).__name__}: {e}")
+    return header
+

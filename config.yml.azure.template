@@ -1,7 +1,7 @@
 ---
 
 stages:
-  prod:
+  unit_test:
     cognition:
       azure:
         api_key:
