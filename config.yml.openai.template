@@ -10,6 +10,7 @@ stages:
         project:
         default_model: gpt-4o-mini
         temperature: 0
+        timeout_seconds: 60
         models:
           gpt-4o-mini:
             max_tokens: 128000
@@ -21,32 +22,40 @@ stages:
         max_results: 3
         topic: general
         include_raw_content: true
+        timeout_seconds: 30
     roles:
       supervisor:
         backend: openai
         handle: gpt-5-nano
         max_tokens: 128000
+        timeout_seconds: 60
       researcher_main:
         backend: openai
         handle: gpt-5-nano
         max_tokens: 128000
+        timeout_seconds: 60
       researcher_summarizer:
         backend: openai
         handle: gpt-5-nano
         max_tokens: 128000
+        timeout_seconds: 60
       researcher_compressor:
         backend: openai
         handle: gpt-5-nano
         max_tokens: 128000
+        timeout_seconds: 60
       writer:
         backend: openai
         handle: gpt-5-nano
         max_tokens: 128000
+        timeout_seconds: 60
       scope_primary:
         backend: openai
         handle: gpt-5-nano
         max_tokens: 128000
+        timeout_seconds: 60
       scope_creative:
         backend: openai
         handle: gpt-5-nano
         max_tokens: 128000
+        timeout_seconds: 60

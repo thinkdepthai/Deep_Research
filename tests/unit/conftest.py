@@ -21,7 +21,9 @@ if str(SRC) not in sys.path:
 spec = importlib.util.spec_from_file_location("deep_research", SRC / "__init__.py")
 if spec and spec.loader:
     module = importlib.util.module_from_spec(spec)
-    module.__path__ = [str(SRC)]
+    # Allow resolution of both flat modules (src/*.py) and package modules
+    # under src/deep_research/ (e.g., deep_research.providers).
+    module.__path__ = [str(SRC), str(SRC / "deep_research")]
     sys.modules["deep_research"] = module
     spec.loader.exec_module(module)
 

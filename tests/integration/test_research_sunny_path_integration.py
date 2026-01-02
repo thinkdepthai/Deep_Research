@@ -104,9 +104,19 @@ async def test_research_sunny_path_real_data(real_config_env):
     checkpointer = InMemorySaver()
     agent = deep_researcher_builder.compile(checkpointer=checkpointer)
 
+    # prompt = (
+    #     "Write a short research brief with risk analysis on how AI-mediated voice communication affects "
+    #     "interpersonal trust in finance."
+    # )
+    
     prompt = (
-        "Write a short research brief with risk analysis on how AI-mediated voice communication affects "
-        "interpersonal trust in finance."
+        "DeepResearch Bench: A Comprehensive Benchmark for Deep Research Agents by Mingxuan Du et al. demonstrated the "
+        "https://github.com/thinkdepthai/Deep_Research to reach second place on their benchmark leaderboard. "
+        "however all of competitors reach about 50% of the total possible points. "
+        "one promintent example has a subcategory score of citation accuracy of over 75%. (gemini 2.5)"
+        "research a systematic literature survey of what are recent advancements in approaches, techniques, or methodologies on citation accuracy in research agents. "
+        "in the future work section, formulate open problems and researc directions to further improve citation accuracy in research agents."
+
     )
 
     thread_config = {"configurable": {"thread_id": "integration-thread", "recursion_limit": 20}}

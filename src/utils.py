@@ -14,13 +14,18 @@ from typing_extensions import Annotated, List, Literal
 from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool, InjectedToolArg
 
+from deep_research import logging as dr_logging
 from deep_research.llm_factory import get_chat_model
 from deep_research.state_research import Summary
 from deep_research.prompts import summarize_webpage_prompt, report_generation_with_draft_insight_prompt
-from deep_research.search_factory import get_search_client, get_search_defaults
+from deep_research.search_factory import (
+    get_search_client,
+    get_search_defaults,
+    get_search_provider,
+)
 
 
-
+logger = dr_logging.get_logger(__name__)
 
 
 # ===== UTILITY FUNCTIONS =====
@@ -46,32 +51,100 @@ def get_current_dir() -> Path:
 
 summarization_model = get_chat_model("researcher_summarizer")
 writer_model = get_chat_model("writer")
-search_client = get_search_client()
-search_defaults = get_search_defaults()
+# Lazily resolve search provider/client/defaults to avoid import-time failures when custom backends are unavailable
+search_provider = None
+search_client = None
+search_defaults = None
 MAX_CONTEXT_LENGTH = 250000
+
+
+def _ensure_search_runtime():
+    """Lazy-init search provider/client/defaults to handle custom backends.
+
+    This avoids import-time failures when a custom backend is named but its
+    module isn't available until runtime/test setup. Preserves any monkeypatched
+    globals (e.g., in unit tests) by only filling missing pieces.
+    """
+    global search_provider, search_client, search_defaults
+    if search_provider is None:
+        search_provider = get_search_provider()
+    if search_client is None:
+        search_client = get_search_client()
+    if search_defaults is None:
+        search_defaults = get_search_defaults()
+    return search_provider, search_client, search_defaults
+
+
+# Attempt to import common timeout exception classes (best-effort, optional deps)
+try:  # pragma: no cover - import guard
+    import requests
+
+    _REQUESTS_TIMEOUT_EXC = (requests.exceptions.Timeout,)
+except Exception:  # pragma: no cover - safe fallback
+    _REQUESTS_TIMEOUT_EXC = tuple()
+
+try:  # pragma: no cover - import guard
+    import httpx
+
+    _HTTPX_TIMEOUT_EXC = (httpx.TimeoutException,)
+except Exception:  # pragma: no cover - safe fallback
+    _HTTPX_TIMEOUT_EXC = tuple()
+
+_TIMEOUT_EXCEPTIONS = (TimeoutError,) + _REQUESTS_TIMEOUT_EXC + _HTTPX_TIMEOUT_EXC
 
 # ===== SEARCH FUNCTIONS =====
 
+def _resolve_search_runtime(client=None, provider=None, defaults=None):
+    """Resolve provider/client/defaults with caching handled in search_factory."""
+    runtime_provider, runtime_client, runtime_defaults = _ensure_search_runtime()
+    resolved_provider = provider or runtime_provider
+    resolved_client = client or runtime_client
+    resolved_defaults = defaults or runtime_defaults
+    return resolved_provider, resolved_client, resolved_defaults
+
+
 def tavily_search_multiple(
     search_queries: List[str],
-    max_results: int = 3,
-    topic: Literal["general", "news", "finance"] = "general",
-    include_raw_content: bool = True,
+    max_results: Optional[int] = 3,
+    topic: Optional[Literal["general", "news", "finance"]] = "general",
+    include_raw_content: Optional[bool] = True,
     client=None,
+    provider=None,
+    defaults=None,
+    timeout_seconds: Optional[int] = None,
 ) -> List[dict]:
-    """Perform search using configured search client for multiple queries."""
+    """Perform search using configured search provider for multiple queries."""
 
-    client = client or search_client
+    provider, client, defaults_obj = _resolve_search_runtime(client, provider, defaults)
+
+    # Allow fallbacks to provider defaults when values are None
+    effective_max_results = max_results if max_results is not None else defaults_obj.get("max_results", 3)
+    effective_topic = topic if topic is not None else defaults_obj.get("topic", "general")
+    effective_include_raw = include_raw_content if include_raw_content is not None else defaults_obj.get("include_raw_content", True)
+    effective_timeout = timeout_seconds if timeout_seconds is not None else defaults_obj.get("timeout_seconds")
 
     # Execute searches sequentially. Note: you can use an async client to parallelize this step.
     search_docs = []
     for query in search_queries:
-        result = client.search(
-            query,
-            max_results=max_results,
-            include_raw_content=include_raw_content,
-            topic=topic,
-        )
+        try:
+            result = provider.search(
+                client,
+                query,
+                max_results=effective_max_results,
+                include_raw_content=effective_include_raw,
+                topic=effective_topic,
+                timeout_seconds=effective_timeout,
+            )
+        except _TIMEOUT_EXCEPTIONS as exc:
+            logger.error(
+                "Search timeout for query='%s' topic='%s' timeout=%s: %s",
+                query,
+                effective_topic,
+                effective_timeout,
+                exc,
+            )
+            raise
+
         search_docs.append(result)
 
     return search_docs
@@ -111,6 +184,7 @@ def summarize_webpage_content(webpage_content: str) -> str:
         print(f"Failed to summarize webpage: {str(e)}")
         return webpage_content[:1000] + "..." if len(webpage_content) > 1000 else webpage_content
 
+
 def deduplicate_search_results(search_results: List[dict]) -> dict:
     """Deduplicate search results by URL to avoid processing duplicate content.
 
@@ -129,6 +203,7 @@ def deduplicate_search_results(search_results: List[dict]) -> dict:
                 unique_results[url] = result
 
     return unique_results
+
 
 def process_search_results(unique_results: dict) -> dict:
     """Process search results by summarizing content where available.
@@ -155,6 +230,7 @@ def process_search_results(unique_results: dict) -> dict:
         }
 
     return summarized_results
+
 
 def format_search_output(summarized_results: dict) -> str:
     """Format search results into a well-structured string output.
@@ -195,9 +271,10 @@ def tavily_search(
     Returns:
         A formatted string containing deduplicated and summarized search results.
     """
-    resolved_max_results = max_results if max_results is not None else search_defaults.get("max_results", 3)
-    resolved_topic = topic if topic is not None else search_defaults.get("topic", "general")
-    include_raw_content = search_defaults.get("include_raw_content", True)
+    _, _, defaults = _ensure_search_runtime()
+    resolved_max_results = max_results if max_results is not None else defaults.get("max_results", 3)
+    resolved_topic = topic if topic is not None else defaults.get("topic", "general")
+    include_raw_content = defaults.get("include_raw_content", True)
 
     # Execute search for single query
     search_results = tavily_search_multiple(

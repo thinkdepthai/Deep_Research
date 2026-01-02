@@ -1,6 +1,6 @@
 [project]
 name = "thinkdepthai_deep_research"
-version = "0.1.0"
+version = "0.1.1"
 description = "ThinkDepth.ai Deep Research"
 requires-python = ">=3.11"
 dependencies = [

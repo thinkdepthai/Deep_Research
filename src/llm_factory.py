@@ -7,7 +7,7 @@ kwargs. Supports OpenAI and Azure OpenAI.
 from __future__ import annotations
 
 import os
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from langchain.chat_models import init_chat_model
 
@@ -17,10 +17,6 @@ from deep_research import logging as dr_logging
 logger = dr_logging.get_logger(__name__)
 
 DEFAULT_STAGE = "unit_test"
-
-
-
-
 
 # Cache configs in-memory keyed by (config path, stage, loader id) to avoid repeat disk reads
 _CONFIG_CACHE: Dict[tuple[str, str, int], Dict[str, Any]] = {}
@@ -50,7 +46,12 @@ def _load_stage_config(stage: str | None) -> Dict[str, Any]:
     return cfg
 
 
-def _build_openai_kwargs(handle: str, api_cfg: Dict[str, Any], max_tokens: int | None) -> Dict[str, Any]:
+def _build_openai_kwargs(
+    handle: str,
+    api_cfg: Dict[str, Any],
+    max_tokens: int | None,
+    timeout_seconds: Optional[int],
+) -> Dict[str, Any]:
     model = handle or api_cfg.get("default_model")
     model_override = os.environ.get("OPENAI_TEST_MODEL")
     if model_override:
@@ -77,13 +78,23 @@ def _build_openai_kwargs(handle: str, api_cfg: Dict[str, Any], max_tokens: int |
     if max_tokens is not None:
         kwargs["max_tokens"] = max_tokens
 
+    if timeout_seconds is not None:
+        # LangChain OpenAI-compatible clients accept timeout/request_timeout
+        kwargs["timeout"] = timeout_seconds
+        kwargs["request_timeout"] = timeout_seconds
+
     if model_kwargs:
         kwargs["model_kwargs"] = model_kwargs
 
     return kwargs
 
 
-def _build_azure_kwargs(handle: str, api_cfg: Dict[str, Any], max_tokens: int | None) -> Dict[str, Any]:
+def _build_azure_kwargs(
+    handle: str,
+    api_cfg: Dict[str, Any],
+    max_tokens: int | None,
+    timeout_seconds: Optional[int],
+) -> Dict[str, Any]:
     deployment_map = api_cfg.get("deployment_map", {}) or {}
     deployment = deployment_map.get(handle, handle)
 
@@ -104,6 +115,9 @@ def _build_azure_kwargs(handle: str, api_cfg: Dict[str, Any], max_tokens: int | 
         kwargs["api_key"] = api_cfg["api_key"]
     if max_tokens is not None:
         kwargs["max_tokens"] = max_tokens
+    if timeout_seconds is not None:
+        kwargs["timeout"] = timeout_seconds
+        kwargs["request_timeout"] = timeout_seconds
 
     return kwargs
 
@@ -114,17 +128,32 @@ def _resolve_config_max_tokens(api_cfg: Dict[str, Any], handle: str) -> int | No
     return model_cfg.get("max_tokens")
 
 
-def _build_kwargs(backend: str, handle: str, api_cfg: Dict[str, Any], max_tokens: int | None) -> Dict[str, Any]:
+def _resolve_timeout_seconds(api_cfg: Dict[str, Any], role_cfg: Dict[str, Any]) -> Optional[int]:
+    # Prefer role-specific timeout; accept aliases for backward compatibility
+    for cfg in (role_cfg, api_cfg):
+        # Prefer explicit per-role then provider; honor aliases (timeout -> request_timeout -> timeout_seconds)
+        for key in ("timeout", "request_timeout", "timeout_seconds"):
+            if cfg.get(key) is not None:
+                return cfg.get(key)
+    return None
+
+
+def _build_kwargs(
+    backend: str,
+    handle: str,
+    api_cfg: Dict[str, Any],
+    role_cfg: Dict[str, Any],
+    max_tokens: int | None,
+) -> Dict[str, Any]:
+    timeout_seconds = _resolve_timeout_seconds(api_cfg, role_cfg)
     if backend == "openai":
-        return _build_openai_kwargs(handle, api_cfg, max_tokens)
+        return _build_openai_kwargs(handle, api_cfg, max_tokens, timeout_seconds)
     if backend == "azure":
-        return _build_azure_kwargs(handle, api_cfg, max_tokens)
+        return _build_azure_kwargs(handle, api_cfg, max_tokens, timeout_seconds)
     raise LLMConfigError(f"Unsupported backend '{backend}'")
 
 
-
 def get_chat_model(role: str, *, stage: str | None = None, max_tokens: int | None = None):
-
     """Return a chat model for the given role using stage config.
 
     Args:
@@ -152,8 +181,6 @@ def get_chat_model(role: str, *, stage: str | None = None, max_tokens: int | Non
 
     role_cfg = roles_cfg[role]
 
-
-
     backend = role_cfg.get("backend")
     handle = role_cfg.get("handle")
     if not backend or not handle:
@@ -163,7 +190,15 @@ def get_chat_model(role: str, *, stage: str | None = None, max_tokens: int | Non
     if api_cfg is None:
         raise LLMConfigError(f"No cognition config for backend '{backend}'")
 
-    logger.info(f"Selected cognition backend '{backend}' for role '{role}' with handle '{handle}'")
+    resolved_timeout = _resolve_timeout_seconds(api_cfg, role_cfg)
+    logger.info(
+        "Selected cognition backend '%s' for role '%s' with handle '%s' (timeout=%s)",
+        backend,
+        role,
+        handle,
+        resolved_timeout,
+    )
+
     resolved_max_tokens = max_tokens
     if resolved_max_tokens is None:
         resolved_max_tokens = _resolve_config_max_tokens(api_cfg, handle)
@@ -172,6 +207,7 @@ def get_chat_model(role: str, *, stage: str | None = None, max_tokens: int | Non
         backend=backend,
         handle=handle,
         api_cfg=api_cfg,
+        role_cfg=role_cfg,
         max_tokens=resolved_max_tokens,
     )
     return init_chat_model(**kwargs)
