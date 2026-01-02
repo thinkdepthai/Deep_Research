@@ -53,6 +53,39 @@ def test_get_chat_model_openai_builds_kwargs(monkeypatch):
     }
 
 
+def test_get_chat_model_openai_uses_config_max_tokens(monkeypatch):
+    config = {
+        "cognition": {
+            "openai": {
+                "api_key": "KEY",
+                "base_url": "https://api.openai.com/v1",
+                "default_model": "gpt-default",
+                "models": {"gpt-4o-mini": {"max_tokens": 777}},
+            }
+        },
+        "roles": {
+            "researcher_main": {"backend": "openai", "handle": "gpt-4o-mini"}
+        },
+    }
+
+    captured = {}
+
+    def fake_init_chat_model(**kwargs):
+        captured["kwargs"] = kwargs
+        return "MODEL"
+
+    def fake_load_config(stage_name=None):
+        return config
+
+    monkeypatch.setattr(llm_factory, "init_chat_model", fake_init_chat_model)
+    monkeypatch.setattr(llm_factory, "load_config", fake_load_config)
+
+    model = llm_factory.get_chat_model("researcher_main", stage="unit_test")
+
+    assert model == "MODEL"
+    assert captured["kwargs"]["max_tokens"] == 777
+
+
 def test_get_chat_model_azure_uses_deployment_map(monkeypatch):
     config = {
         "cognition": {
@@ -85,12 +118,12 @@ def test_get_chat_model_azure_uses_deployment_map(monkeypatch):
     assert model == "AZMODEL"
     assert captured["kwargs"] == {
         "model": "deploy-mini",
+        "azure_deployment": "deploy-mini",
+        "azure_endpoint": "https://azure.openai.endpoint",
+        "model_provider": "azure_openai",
         "api_key": "AZKEY",
+        "api_version": "2024-05-01-preview",
         "max_tokens": 999,
-        "model_kwargs": {
-            "azure_endpoint": "https://azure.openai.endpoint",
-            "api_version": "2024-05-01-preview",
-        },
     }
 
 

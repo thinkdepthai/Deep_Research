@@ -12,9 +12,15 @@ from typing import Any, Dict
 from langchain.chat_models import init_chat_model
 
 from modules.util.confighelpers import load_config
+from deep_research import logging as dr_logging
 
+logger = dr_logging.get_logger(__name__)
 
 DEFAULT_STAGE = "unit_test"
+
+
+
+
 
 # Cache configs in-memory keyed by (config path, stage, loader id) to avoid repeat disk reads
 _CONFIG_CACHE: Dict[tuple[str, str, int], Dict[str, Any]] = {}
@@ -46,14 +52,23 @@ def _load_stage_config(stage: str | None) -> Dict[str, Any]:
 
 def _build_openai_kwargs(handle: str, api_cfg: Dict[str, Any], max_tokens: int | None) -> Dict[str, Any]:
     model = handle or api_cfg.get("default_model")
+    model_override = os.environ.get("OPENAI_TEST_MODEL")
+    if model_override:
+        model = model_override
+
     if not model:
         raise LLMConfigError("OpenAI config requires a model or default_model")
 
-    kwargs: Dict[str, Any] = {"model": model}
+    kwargs: Dict[str, Any] = {
+        "model": model,
+    }
 
     for key in ("api_key", "base_url", "organization"):
         if api_cfg.get(key):
             kwargs[key] = api_cfg[key]
+
+    if api_cfg.get("temperature") is not None:
+        kwargs["temperature"] = api_cfg["temperature"]
 
     model_kwargs: Dict[str, Any] = {}
     if api_cfg.get("project"):
@@ -78,19 +93,25 @@ def _build_azure_kwargs(handle: str, api_cfg: Dict[str, Any], max_tokens: int | 
 
     kwargs: Dict[str, Any] = {
         "model": deployment,
+        "azure_deployment": deployment,
+        "azure_endpoint": azure_endpoint,
+        "model_provider": "azure_openai",
     }
 
-    model_kwargs: Dict[str, Any] = {"azure_endpoint": azure_endpoint}
-
     if api_cfg.get("api_version"):
-        model_kwargs["api_version"] = api_cfg["api_version"]
+        kwargs["api_version"] = api_cfg["api_version"]
     if api_cfg.get("api_key"):
         kwargs["api_key"] = api_cfg["api_key"]
     if max_tokens is not None:
         kwargs["max_tokens"] = max_tokens
 
-    kwargs["model_kwargs"] = model_kwargs
     return kwargs
+
+
+def _resolve_config_max_tokens(api_cfg: Dict[str, Any], handle: str) -> int | None:
+    models_cfg = api_cfg.get("models") or {}
+    model_cfg = models_cfg.get(handle) or {}
+    return model_cfg.get("max_tokens")
 
 
 def _build_kwargs(backend: str, handle: str, api_cfg: Dict[str, Any], max_tokens: int | None) -> Dict[str, Any]:
@@ -101,7 +122,9 @@ def _build_kwargs(backend: str, handle: str, api_cfg: Dict[str, Any], max_tokens
     raise LLMConfigError(f"Unsupported backend '{backend}'")
 
 
+
 def get_chat_model(role: str, *, stage: str | None = None, max_tokens: int | None = None):
+
     """Return a chat model for the given role using stage config.
 
     Args:
@@ -126,5 +149,15 @@ def get_chat_model(role: str, *, stage: str | None = None, max_tokens: int | Non
     if api_cfg is None:
         raise LLMConfigError(f"No cognition config for backend '{backend}'")
 
-    kwargs = _build_kwargs(backend=backend, handle=handle, api_cfg=api_cfg, max_tokens=max_tokens)
+    logger.info(f"Selected cognition backend '{backend}' for role '{role}' with handle '{handle}'")
+    resolved_max_tokens = max_tokens
+    if resolved_max_tokens is None:
+        resolved_max_tokens = _resolve_config_max_tokens(api_cfg, handle)
+
+    kwargs = _build_kwargs(
+        backend=backend,
+        handle=handle,
+        api_cfg=api_cfg,
+        max_tokens=resolved_max_tokens,
+    )
     return init_chat_model(**kwargs)

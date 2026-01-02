@@ -1,0 +1,54 @@
+---
+
+stages:
+  prod:
+    cognition:
+      azure:
+        api_key:
+        azure_endpoint:
+        api_version:
+        models:
+          gpt-5.1-2025-11-13:
+            max_tokens: 128000
+    search:
+      backend: tavily
+      tavily:
+        api_key: 
+        base_url: https://api.tavily.com
+        max_results: 3
+        topic: general
+        include_raw_content: true
+    roles:
+      supervisor:
+        backend: azure
+        handle: gpt-5.1-2025-11-13
+        max_tokens: 128000
+      researcher_main:
+        backend: azure
+        handle: gpt-5.1-2025-11-13
+        max_tokens: 128000
+      researcher_summarizer:
+        backend: azure
+        handle: gpt-5.1-2025-11-13
+        max_tokens: 128000
+      researcher_compressor:
+        backend: azure
+        handle: gpt-5.1-2025-11-13
+        max_tokens: 128000
+      writer:
+        backend: azure
+        handle: gpt-5.1-2025-11-13
+        max_tokens: 128000
+      scope_primary:
+        backend: azure
+        handle: gpt-5.1-2025-11-13
+        max_tokens: 128000
+      scope_creative:
+        backend: azure
+        handle: gpt-5.1-2025-11-13
+        max_tokens: 128000
+
+
+
+
+

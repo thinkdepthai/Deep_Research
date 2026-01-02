@@ -17,7 +17,9 @@ To avoid unintended live calls, the test will skip when required config/keys are
 from __future__ import annotations
 
 import os
+import re
 import sys
+from datetime import datetime
 from pathlib import Path
 
 import pytest
@@ -32,6 +34,41 @@ if str(SRC) not in sys.path:
 
 from modules.util.confighelpers import load_config  # noqa: E402
 from deep_research.research_agent_full import deep_researcher_builder  # noqa: E402
+
+
+def _slugify_topic(text: str, max_length: int = 48) -> str:
+    slug = re.sub(r"[^a-zA-Z0-9]+", "-", text.lower()).strip("-")
+    if len(slug) > max_length:
+        slug = slug[:max_length].rstrip("-")
+    return slug or "topic"
+
+
+def _coerce_message_text(message):
+    """Return a string view of a message when possible."""
+    if isinstance(message, str):
+        return message
+    content = getattr(message, "content", None)
+    if isinstance(content, str):
+        return content
+    return None
+
+
+def _write_report(final_report: str, prompt: str) -> None:
+    reports_dir = ROOT.parent / "reports"
+    reports_dir.mkdir(parents=True, exist_ok=True)
+
+    timestamp = datetime.utcnow().strftime("%Y%m%d-%H%M%S")
+    slug = _slugify_topic(prompt)
+    report_path = reports_dir / f"{timestamp}-{slug}.md"
+
+    content = (
+        "# Research report\n\n"
+        f"## Prompt\n{prompt}\n\n"
+        "## Final report\n"
+        f"{final_report}\n"
+    )
+
+    report_path.write_text(content)
 
 
 @pytest.fixture(scope="session")
@@ -61,12 +98,15 @@ def real_config_env():
 async def test_research_sunny_path_real_data(real_config_env):
     """Runs the full research graph on a single prompt and checks for output."""
 
+    if os.getenv("GITLAB_CI"):
+        pytest.skip("Skipping live integration in GitLab CI")
+
     checkpointer = InMemorySaver()
     agent = deep_researcher_builder.compile(checkpointer=checkpointer)
 
     prompt = (
-        "Write a short research brief on how AI-mediated communication affects "
-        "interpersonal trust, noting mechanisms, benefits, and risks."
+        "Write a short research brief with risk analysis on how AI-mediated voice communication affects "
+        "interpersonal trust in finance."
     )
 
     thread_config = {"configurable": {"thread_id": "integration-thread", "recursion_limit": 20}}
@@ -79,4 +119,15 @@ async def test_research_sunny_path_real_data(real_config_env):
 
     messages = result.get("messages", [])
     assert messages, "Agent should surface user-facing messages"
-    assert any(isinstance(m, str) and final_report[:30] in m or "final report" in m.lower() for m in messages)
+
+    def _contains_final_report(msg) -> bool:
+        text = _coerce_message_text(msg)
+        if not text:
+            return False
+        prefix_hit = final_report[:30] in text
+        phrase_hit = "final report" in text.lower()
+        return prefix_hit or phrase_hit
+
+    assert any(_contains_final_report(m) for m in messages)
+
+    _write_report(final_report=final_report, prompt=prompt)

@@ -1,0 +1,52 @@
+---
+
+stages:
+  prod:
+    cognition:
+      openai:
+        base_url: https://api.openai.com/v1
+        api_key:
+        organization:
+        project:
+        default_model: gpt-4o-mini
+        temperature: 0
+        models:
+          gpt-4o-mini:
+            max_tokens: 128000
+    search:
+      backend: tavily
+      tavily:
+        api_key: 
+        base_url: https://api.tavily.com
+        max_results: 3
+        topic: general
+        include_raw_content: true
+    roles:
+      supervisor:
+        backend: openai
+        handle: gpt-5-nano
+        max_tokens: 128000
+      researcher_main:
+        backend: openai
+        handle: gpt-5-nano
+        max_tokens: 128000
+      researcher_summarizer:
+        backend: openai
+        handle: gpt-5-nano
+        max_tokens: 128000
+      researcher_compressor:
+        backend: openai
+        handle: gpt-5-nano
+        max_tokens: 128000
+      writer:
+        backend: openai
+        handle: gpt-5-nano
+        max_tokens: 128000
+      scope_primary:
+        backend: openai
+        handle: gpt-5-nano
+        max_tokens: 128000
+      scope_creative:
+        backend: openai
+        handle: gpt-5-nano
+        max_tokens: 128000

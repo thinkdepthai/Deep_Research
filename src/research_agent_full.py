@@ -24,7 +24,7 @@ from deep_research.llm_factory import get_chat_model
 
 # ===== Config =====
 
-writer_model = get_chat_model("writer", max_tokens=40000) # model="anthropic:claude-sonnet-4-20250514", max_tokens=64000
+writer_model = get_chat_model("writer")
 
 # ===== FINAL REPORT GENERATION =====
 

@@ -45,7 +45,7 @@ def get_current_dir() -> Path:
 # ===== CONFIGURATION =====
 
 summarization_model = get_chat_model("researcher_summarizer")
-writer_model = get_chat_model("writer", max_tokens=32000)
+writer_model = get_chat_model("writer")
 search_client = get_search_client()
 search_defaults = get_search_defaults()
 MAX_CONTEXT_LENGTH = 250000
