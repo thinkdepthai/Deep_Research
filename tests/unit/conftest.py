@@ -8,24 +8,16 @@ import pytest
 # Ensure the project src is importable as the deep_research package without installation
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
+PACKAGE = SRC / "deep_research"
 
 # Provide dummy API keys to satisfy client/model initialization during import
 os.environ.setdefault("OPENAI_API_KEY", "test-key")
 os.environ.setdefault("TAVILY_API_KEY", "test-key")
 
-# Add project src to sys.path for module resolution
-if str(SRC) not in sys.path:
-    sys.path.insert(0, str(SRC))
-
-# Create an import alias so 'deep_research' resolves to the src package
-spec = importlib.util.spec_from_file_location("deep_research", SRC / "__init__.py")
-if spec and spec.loader:
-    module = importlib.util.module_from_spec(spec)
-    # Allow resolution of both flat modules (src/*.py) and package modules
-    # under src/deep_research/ (e.g., deep_research.providers).
-    module.__path__ = [str(SRC), str(SRC / "deep_research")]
-    sys.modules["deep_research"] = module
-    spec.loader.exec_module(module)
+# Add project src and package to sys.path for module resolution
+for p in (SRC, PACKAGE):
+    if str(p) not in sys.path:
+        sys.path.insert(0, str(p))
 
 
 @pytest.fixture(autouse=True)

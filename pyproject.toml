@@ -38,27 +38,35 @@ requires = ["setuptools>=73.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["deep_research"]
-py-modules = [
-    "llm_factory",
-    "logging",
-    "multi_agent_supervisor",
-    "prompts",
-    "research_agent",
-    "research_agent_full",
-    "research_agent_scope",
-    "search_factory",
-    "state_multi_agent_supervisor",
-    "state_research",
-    "state_scope",
-    "utils",
-]
+py-modules = []
+include-package-data = false
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["deep_research*"]
+exclude = ["*.egg-info"]
 
 [tool.setuptools.package-dir]
 "" = "src"
 
 [tool.setuptools.package-data]
 deep_research = ["py.typed"]
+
+[tool.setuptools.exclude-package-data]
+"*" = [
+    "llm_factory.py",
+    "logging.py",
+    "multi_agent_supervisor.py",
+    "prompts.py",
+    "research_agent.py",
+    "research_agent_full.py",
+    "research_agent_scope.py",
+    "search_factory.py",
+    "state_multi_agent_supervisor.py",
+    "state_research.py",
+    "state_scope.py",
+    "utils.py",
+]
 
 [tool.ruff]
 lint.select = [

@@ -51,24 +51,19 @@ def import_submodule(name: str) -> ModuleType:
 
 # Eagerly import submodules to expose them under deep_research.<module>
 for _mod in _MODULES:
-    try:
-        globals()[_mod] = import_module(f"{__name__}.{_mod}")
-    except ModuleNotFoundError:
-        # Fallback for flat-layout installs (e.g., PYTHONPATH=.) where modules
-        # live at the package root rather than under deep_research/.
-        globals()[_mod] = import_module(_mod)
+    globals()[_mod] = import_module(f"{__name__}.{_mod}")
 
 if TYPE_CHECKING:
     # Explicit re-exports for type checkers
-    from llm_factory import *  # noqa: F401,F403
-    from logging import *  # noqa: F401,F403
-    from multi_agent_supervisor import *  # noqa: F401,F403
-    from prompts import *  # noqa: F401,F403
-    from research_agent import *  # noqa: F401,F403
-    from research_agent_full import *  # noqa: F401,F403
-    from research_agent_scope import *  # noqa: F401,F403
-    from search_factory import *  # noqa: F401,F403
-    from state_multi_agent_supervisor import *  # noqa: F401,F403
-    from state_research import *  # noqa: F401,F403
-    from state_scope import *  # noqa: F401,F403
-    from utils import *  # noqa: F401,F403
+    from deep_research.llm_factory import *  # noqa: F401,F403
+    from deep_research.logging import *  # noqa: F401,F403
+    from deep_research.multi_agent_supervisor import *  # noqa: F401,F403
+    from deep_research.prompts import *  # noqa: F401,F403
+    from deep_research.research_agent import *  # noqa: F401,F403
+    from deep_research.research_agent_full import *  # noqa: F401,F403
+    from deep_research.research_agent_scope import *  # noqa: F401,F403
+    from deep_research.search_factory import *  # noqa: F401,F403
+    from deep_research.state_multi_agent_supervisor import *  # noqa: F401,F403
+    from deep_research.state_research import *  # noqa: F401,F403
+    from deep_research.state_scope import *  # noqa: F401,F403
+    from deep_research.utils import *  # noqa: F401,F403

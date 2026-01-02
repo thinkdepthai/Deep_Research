@@ -17,17 +17,11 @@ SRC = ROOT / "src"
 os.environ.setdefault("OPENAI_API_KEY", "test-key")
 os.environ.setdefault("TAVILY_API_KEY", "test-key")
 
-# Ensure src is on sys.path
-if str(SRC) not in sys.path:
-    sys.path.insert(0, str(SRC))
+# Ensure src and repo root (for modules.*) are on sys.path
+for path in (SRC, ROOT):
+    if str(path) not in sys.path:
+        sys.path.insert(0, str(path))
 
-# Create an import alias so 'deep_research' resolves to the src package
-spec = importlib.util.spec_from_file_location("deep_research", SRC / "__init__.py")
-if spec and spec.loader:
-    module = importlib.util.module_from_spec(spec)
-    module.__path__ = [str(SRC)]
-    sys.modules["deep_research"] = module
-    spec.loader.exec_module(module)
 
 
 def pytest_report_header(config):
