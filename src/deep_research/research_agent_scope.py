@@ -9,18 +9,27 @@ The workflow uses structured output to make deterministic decisions about
 whether sufficient context exists to proceed with research.
 """
 
+import os
 from datetime import datetime
 from typing_extensions import Literal
 
-from langchain.chat_models import init_chat_model
-from langchain_core.messages import HumanMessage, get_buffer_string
+from langchain_core.messages import AIMessage, HumanMessage, get_buffer_string
 from langgraph.graph import StateGraph, START, END
 from langgraph.types import Command
 
+from deep_research import logging as dr_logging
+from deep_research.llm_factory import get_chat_model
 from deep_research.prompts import transform_messages_into_research_topic_human_msg_prompt, draft_report_generation_prompt, clarify_with_user_instructions
-from deep_research.state_scope import AgentState, ResearchQuestion, AgentInputState, DraftReport
+from deep_research.state_scope import AgentState, ResearchQuestion, AgentInputState, DraftReport, ClarifyWithUser
+
+logger = dr_logging.get_logger(__name__)
 
 # ===== UTILITY FUNCTIONS =====
+
+
+
+
+
 
 def get_today_str() -> str:
     """Get current date in a human-readable format."""
@@ -28,44 +37,37 @@ def get_today_str() -> str:
 
 # ===== CONFIGURATION =====
 
+DEFAULT_INTERACTIVE = os.getenv("DEEP_RESEARCH_INTERACTIVE", "false").lower() == "true"
+
 # Initialize model
-model = init_chat_model(model="openai:gpt-5")
-creative_model = init_chat_model(model="openai:gpt-5")
+logger.debug("Initializing scope models: scope_primary and scope_creative")
+model = get_chat_model("scope_primary")
+creative_model = get_chat_model("scope_creative")
 
 # ===== WORKFLOW NODES =====
 
 def clarify_with_user(state: AgentState) -> Command[Literal["write_research_brief"]]:
-    #uncomment if you want to enable this module  
-    """
-    Determine if the user's request contains sufficient information to proceed with research.
+    logger.debug("clarify_with_user called with %d messages", len(state.get("messages", [])))
+    # Headless mode: skip interactive clarification and proceed.
+    if not DEFAULT_INTERACTIVE:
+        return Command(goto="write_research_brief")
 
-    Uses structured output to make deterministic decisions and avoid hallucination.
-    Routes to either research brief generation or ends with a clarification question.
-    """
-
-    """
-    # Set up structured output model
+    # Interactive path: run structured clarification and possibly ask a question.
     structured_output_model = model.with_structured_output(ClarifyWithUser)
-
-    # Invoke the model with clarification instructions
     response = structured_output_model.invoke([
         HumanMessage(content=clarify_with_user_instructions.format(
-            messages=get_buffer_string(messages=state["messages"]), 
+            messages=get_buffer_string(messages=state.get("messages", [])), 
             date=get_today_str()
         ))
     ])
 
-    # Route based on clarification need
     if response.need_clarification:
         return Command(
             goto=END, 
             update={"messages": [AIMessage(content=response.question)]}
         )
-    else:
-    """
-    return Command(
-        goto="write_research_brief"
-    )
+
+    return Command(goto="write_research_brief")
 
 def write_research_brief(state: AgentState) -> Command[Literal["write_draft_report"]]:
     """
@@ -74,16 +76,20 @@ def write_research_brief(state: AgentState) -> Command[Literal["write_draft_repo
     Uses structured output to ensure the brief follows the required format
     and contains all necessary details for effective research.
     """
+    logger.debug(
+        "write_research_brief invoked with %d messages", len(state.get("messages", []))
+    )
     # Set up structured output model
     structured_output_model = model.with_structured_output(ResearchQuestion)
 
     # Generate research brief from conversation history
-    response = structured_output_model.invoke([
-        HumanMessage(content=transform_messages_into_research_topic_human_msg_prompt.format(
-            messages=get_buffer_string(state.get("messages", [])),
-            date=get_today_str()
-        ))
-    ])
+    prompt = transform_messages_into_research_topic_human_msg_prompt.format(
+        messages=get_buffer_string(state.get("messages", [])),
+        date=get_today_str()
+    )
+    logger.debug("write_research_brief invoking structured_output_model with prompt_length=%d", len(prompt))
+    response = structured_output_model.invoke([HumanMessage(content=prompt)])
+    logger.debug("write_research_brief produced research_brief length=%d", len(response.research_brief))
 
     # Update state with generated research brief and pass it to the supervisor
     return Command(
@@ -97,6 +103,10 @@ def write_draft_report(state: AgentState) -> Command[Literal["__end__"]]:
 
     Synthesizes all research findings into a comprehensive final report
     """
+    logger.debug(
+        "write_draft_report invoked with research_brief present=%s",
+        bool(state.get("research_brief")),
+    )
     # Set up structured output model
     structured_output_model = creative_model.with_structured_output(DraftReport)
     research_brief = state.get("research_brief", "")
@@ -106,6 +116,7 @@ def write_draft_report(state: AgentState) -> Command[Literal["__end__"]]:
     )
 
     response = structured_output_model.invoke([HumanMessage(content=draft_report_prompt)])
+    logger.debug("write_draft_report produced draft_report length=%d", len(response.draft_report))
 
     return {
         "research_brief": research_brief,

@@ -20,11 +20,11 @@ from deep_research.prompts import final_report_generation_with_helpfulness_insig
 from deep_research.state_scope import AgentState, AgentInputState
 from deep_research.research_agent_scope import clarify_with_user, write_research_brief, write_draft_report
 from deep_research.multi_agent_supervisor import supervisor_agent
+from deep_research.llm_factory import get_chat_model
 
 # ===== Config =====
 
-from langchain.chat_models import init_chat_model
-writer_model = init_chat_model(model="openai:gpt-5", max_tokens=40000) # model="anthropic:claude-sonnet-4-20250514", max_tokens=64000
+writer_model = get_chat_model("writer")
 
 # ===== FINAL REPORT GENERATION =====
 
