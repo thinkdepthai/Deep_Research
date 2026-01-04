@@ -31,7 +31,7 @@ uv run jupyter notebook thinkdepthai_deepresearch.ipynb
 
 ### Experiments
 <a href="https://thinkdepth.ai">ThinkDepth.ai</a> deep research was ranked #1 and established a new state-of-art result on <a href="https://huggingface.co/spaces/Ayanami0730/DeepResearch-Leaderboard/discussions/4/files">DeepResearch  Bench</a> on Nov 17th, 2025. 
-And it remained as #1 open source deep research agent on DeepResearch Bench since Nov 22nd, 2025. 
+It is #1 open source deep research agent on DeepResearch Bench since Nov 22nd, 2025. 
 * It outperformed Google Gemini 2.5 pro deep research by 2.78%.
 * It outperformed OpenAI deep research by 6.04%.
 * It outperformed Anthropic Claude deep research by  7.45%.
