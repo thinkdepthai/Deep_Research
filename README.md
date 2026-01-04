@@ -34,7 +34,7 @@ uv run jupyter notebook thinkdepthai_deepresearch.ipynb
 * It outperformed Google Gemini 2.5 pro deep research by 2.78%.
 * It outperformed OpenAI deep research by 6.04%.
 * It outperformed Anthropic Claude deep research by  7.45%.
-* ThinkDepth.ai deep research agent is #1 <b>open source</b> deep agent on DeepResearch Bench since Nov 22nd, 2025. 
+* ThinkDepth.ai deep research agent is #1 <b>open source</b> deep multi-agent on DeepResearch Bench since Nov 22nd, 2025. 
 
 <img width="899" height="463" alt="benchmark" src="https://github.com/user-attachments/assets/1ddd8bd0-1d04-467e-a00d-394e9dc967f8" />
 
