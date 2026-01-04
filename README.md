@@ -42,7 +42,7 @@ uv run jupyter notebook thinkdepthai_deepresearch.ipynb
 <img width="1178" height="751" alt="huggingface_leaderboard" src="https://github.com/user-attachments/assets/2d88256a-5e77-46f8-bd51-fe083bfcc780" />
 
 <a href="https://huggingface.co/spaces/muset-ai/DeepResearch-Bench-Leaderboard"> DeepResearch Bench Leaderboard </a> 
-ThinkDepth.ai deep research agent is #1 <b>open source</b> deep multi-agent on DeepResearch Bench since Nov 22nd, 2025. 
+ThinkDepth.ai deep research agent is #1 <b>open source</b> deep research agent on DeepResearch Bench since Nov 22nd, 2025. 
 
 ### Example Generated Report
 For the task "Write a paper to discuss the influence of AI interaction on interpersonal relations, considering AI's potential to fundamentally change how and why individuals relate to each other.", a snapshot of the generated report is shared below:
